@@ -1,0 +1,2 @@
+--- !ruby/object:MongoDbUtils::Model::Config
+name: This is the config

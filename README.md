@@ -1,19 +1,12 @@
-# Mongo::Db::Utils
+# MongoDbUtils
 
+!! Not ready for public consumption
 
-1. copy a database from one server to another
-  > eg: db-one@source.com -> db-two@target.com
-  >> 1. create a backup of db-two: backups/target.com/db-two/2012.7.20_19.54
-  >> 2. mongodump -h source.com -db db-one dumps/source.com/db-one/...
-  >> 3. mongorestore -db db-two -h target.com dumps/source.com/db-one
-  >> 4. rm -fr dumps/source.com/db-one
-  >>
-  >>
-2. backup a database
-  > eg: db-one@source.com
-  >> 1. mongodump -h source.com -db db-one backups/source.com/db-one/2012.7.20_12.34
-  >>
-  >>
+A gem to simplify backing up and copying your mongo dbs.
+
+* backup a database
+* copy a database from one server to another
+
 
 
 ## Installation

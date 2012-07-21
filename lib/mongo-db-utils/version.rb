@@ -1,7 +1,3 @@
-module Mongo
-  module Db
-    module Utils
+module MongoDbUtils
       VERSION = "0.0.1"
-    end
-  end
 end

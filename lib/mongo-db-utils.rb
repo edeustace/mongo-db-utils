@@ -6,4 +6,9 @@ module MongoDbUtils
         "hello #{name}"
       end
     end
+
+    class Controller
+      def self.load_config
+      end
+    end
 end
