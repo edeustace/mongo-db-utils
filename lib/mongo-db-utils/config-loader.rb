@@ -1,3 +1,5 @@
+require 'mongo-db-utils/models'
+
 module MongoDbUtils
 
   class ConfigLoader
@@ -14,19 +16,12 @@ module MongoDbUtils
         config.writer = self
         config
       else
-        config = Model::Config.new
-        config.writer = self
-        config.backup_folder = "#{ROOT_FOLDER}/backups"
-        self.initialize_files(full_path)
-        File.open( full_path, 'w' ) do |out|
-          YAML.dump( config, out )
-        end
-        config
+        self.create_fresh_install_config(full_path)
       end
     end
 
     def self.flush(path = CONFIG_LOCATION)
-      path = self.expand(path)
+      path = File.expand_path(path)
       puts "removing: #{path}"
       FileUtils.rm(path) if File.exist?(path)
       self.initialize_files(path)
@@ -41,6 +36,17 @@ module MongoDbUtils
     end
 
     private 
+    def self.create_fresh_install_config(full_path)
+        config = Model::Config.new
+        config.writer = self
+        config.backup_folder = "#{ROOT_FOLDER}/backups"
+        self.initialize_files(full_path)
+        File.open( full_path, 'w' ) do |out|
+          YAML.dump( config, out )
+        end
+        config
+    end
+
     def self.get_folder_name(path)
       /(.*)\/.*.yml/.match(path)[1]
     end
