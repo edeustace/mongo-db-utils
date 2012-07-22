@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["ed.eustace@gmail.com"]
   gem.description   = %q{some utilities for managing your mongod dbs}
   gem.summary       = %q{some utilities for managing your mongod dbs}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/edeustace/mongo-db-utils"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
