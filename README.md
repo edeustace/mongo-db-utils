@@ -1,15 +1,17 @@
 # MongoDbUtils
 
-!! Not ready for public consumption
+A little gem that simplifies backing up and copying your mongo dbs.
 
-A gem to simplify backing up and copying your mongo dbs.
+It saves your database urls so any task is just a few clicks.
 
 * backup a database
-* copy a database from one server to another
+* copy a database from one server to another (whilst backing up the target db if it exits)
 
 
 
 ## Installation
+
+You need to have mongorestore and mongodump on your path.
 
 Add this line to your application's Gemfile:
 

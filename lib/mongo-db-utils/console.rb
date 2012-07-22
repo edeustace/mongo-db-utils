@@ -56,12 +56,12 @@ eos
 
     def show_config
       say("Config")
-      say("dbs")
+      say("--------------------")
+      say("dbs:")
       say("--------------------")
       @config.dbs.each do |db|
         say("#{db.to_s_simple}")
       end
-
       say("--------------------")
       say("")
       say("backups folder:")
@@ -101,6 +101,7 @@ eos
         @config.dbs.each do |db|
           menu.choice "#{db.host}:#{db.port}/#{db.name}" do backup(db) end
         end
+        menu.choice "back" do main_menu end
       end
     end
 
