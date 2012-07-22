@@ -55,12 +55,19 @@ eos
     end
 
     def show_config
-      say("config::")
-      say("dbs:")
+      say("Config")
+      say("dbs")
+      say("--------------------")
       @config.dbs.each do |db|
         say("#{db.to_s_simple}")
       end
 
+      say("--------------------")
+      say("")
+      say("backups folder:")
+      say("--------------------")
+      say("#{@config.backup_folder}")
+      say("--------------------")
       choose do |menu| 
         prep_menu(menu)
         menu.choice "back" do main_menu end
@@ -105,7 +112,7 @@ eos
     private
     def backup(db)
       puts ">> ..backing up #{db}"
-      @cmd.backup(db)
+      @cmd.backup(db, @config.backup_folder)
     end
 
     def prep_menu(menu)

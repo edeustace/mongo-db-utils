@@ -3,10 +3,10 @@ require 'mongo-db-utils/cmd/mongodump'
 module MongoDbUtils
   class Cmd
 
-    def self.backup(db)
+    def self.backup(db, path)
       t = Time.new
       timestamp = t.strftime("%Y.%m.%d__%H.%M")
-      out_path = "~/.mongo-db-utils/backups/#{db.host}_#{db.port}/#{db.name}/#{timestamp}"
+      out_path = "#{path}/{db.host}_#{db.port}/#{db.name}/#{timestamp}"
       full_path = File.expand_path(out_path)
       
       FileUtils.mkdir_p(full_path)
@@ -14,7 +14,7 @@ module MongoDbUtils
       `tar cvf #{full_path}/#{db.name}.tar.gz #{full_path}/#{db.name}`
       `rm -fr #{full_path}/#{db.name}`
     end
-
+=begin
     def self.list_dbs(servers)
       result = []
       servers.each do |server|
@@ -29,7 +29,7 @@ module MongoDbUtils
       end
       result
     end
-
+=end
   end
 end
 

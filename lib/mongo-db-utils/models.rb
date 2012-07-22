@@ -4,6 +4,7 @@ module MongoDbUtils
     class Config
       attr_reader :dbs
       attr_writer :writer
+      attr_accessor :backup_folder
 
       def initialize
         @dbs = []
