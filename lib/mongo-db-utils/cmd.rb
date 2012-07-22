@@ -1,3 +1,5 @@
+require 'mongo-db-utils/cmd/mongodump'
+
 module MongoDbUtils
   class Cmd
 
@@ -6,8 +8,9 @@ module MongoDbUtils
       timestamp = t.strftime("%Y.%m.%d__%H.%M")
       out_path = "~/.mongo-db-utils/backups/#{db.host}_#{db.port}/#{db.name}/#{timestamp}"
       full_path = File.expand_path(out_path)
+      
       FileUtils.mkdir_p(full_path)
-      `mongodump -h #{db.host}:#{db.port} -db #{db.name} -o #{full_path} -u #{db.username} -p #{db.password}`
+      MongoDbUtils::Commands::MongoDump.dump(db.host,db.port,db.name,full_path,db.username,db.password)
       `tar cvf #{full_path}/#{db.name}.tar.gz #{full_path}/#{db.name}`
       `rm -fr #{full_path}/#{db.name}`
     end

@@ -27,6 +27,15 @@ Or install it yourself as:
 
 TODO: Write usage instructions here
 
+## Building source
+
+    #run console
+    bundle exec bin/mongo-db-utils console
+
+    #install the gem locally
+    rake build
+    gem install pkg/mongo-db-utils.gem
+
 ## Contributing
 
 1. Fork it

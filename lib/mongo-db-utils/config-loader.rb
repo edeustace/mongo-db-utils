@@ -10,7 +10,7 @@ module MongoDbUtils
         config = YAML.load(File.open(full_path))
         
         if config == false
-          config = Config.new
+          config = Model::Config.new
           config.writer = self
           config.save
           config
@@ -20,7 +20,7 @@ module MongoDbUtils
         end
       else
         self.initialize_files(full_path)
-        config = Config.new
+        config = Model::Config.new
         config.writer = self
         File.open( full_path, 'w' ) do |out|
           YAML.dump( config, out )

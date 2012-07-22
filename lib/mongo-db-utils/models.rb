@@ -28,6 +28,10 @@ module MongoDbUtils
         !db.nil?
       end
 
+      def save
+        @writer.save(self)
+      end
+
       def to_s
         "Config"
       end
