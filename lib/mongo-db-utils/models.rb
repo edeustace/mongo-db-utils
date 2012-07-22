@@ -24,6 +24,7 @@ module MongoDbUtils
         db = Db.from_uri(uri)
         unless db.nil?
           @dbs << db
+          @dbs.sort!
           @writer.save(self)
         end
         !db.nil?
@@ -84,6 +85,11 @@ module MongoDbUtils
       def to_s_simple
         "#{@host}:#{@port}/#{@name}"
       end
+
+      def <=>(other)
+        self.to_s <=> other.to_s
+      end
+
     end
   end
 end

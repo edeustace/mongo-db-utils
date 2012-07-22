@@ -59,7 +59,7 @@ eos
       say("--------------------")
       say("dbs:")
       say("--------------------")
-      @config.dbs.each do |db|
+      @config.dbs.sort.each do |db|
         say("#{db.to_s_simple}")
       end
       say("--------------------")
@@ -99,7 +99,7 @@ eos
       choose do |menu|
         prep_menu(menu)
         @config.dbs.each do |db|
-          menu.choice "#{db.host}:#{db.port}/#{db.name}" do backup(db) end
+          menu.choice "#{db.to_s_simple}" do backup(db) end
         end
         menu.choice "back" do main_menu end
       end
@@ -107,7 +107,55 @@ eos
 
 
     def copy_a_db
-      say("not ready yet - goodbye")
+
+      copy_plan = Hash.new
+
+      say("Choose db to copy:")
+      choose do |menu|
+        prep_menu(menu)
+        @config.dbs.sort.each do |db|
+          menu.choice "#{db.to_s_simple}" do 
+            copy_plan[:source] = db 
+          end
+        
+        end
+        menu.choice "add server to config" do add_config end
+        menu.choice "back" do 
+          main_menu 
+          return 
+        end
+      end
+
+      say("Choose db destination:")
+      choose do |menu|
+        prep_menu(menu)
+        @config.dbs.sort.each do |db|
+          menu.choice "#{db.to_s_simple}" do 
+            copy_plan[:destination] = db
+          end unless db == copy_plan[:source]
+        end
+        menu.choice "add server to config" do add_config end
+      end
+      show_copy_plan(copy_plan)
+    end
+
+    def show_copy_plan(plan)
+      say("Copy: (we'll backup the destination before we copy)")
+      say("#{plan[:source].to_s_simple} --> #{plan[:destination].to_s_simple}")
+
+      choose do |menu|
+        prep_menu(menu)
+        menu.choice "Begin" do begin_copy(plan) end
+        menu.choice "Reverse" do 
+          show_copy_plan( {:source => plan[:destination], :destination => plan[:source]}) 
+        end
+        menu.choice "Back" do main_menu end
+      end
+    end
+
+    def begin_copy(plan)
+      say("doing copy...")
+      @cmd.copy(@config.backup_folder, plan[:source], plan[:destination], false)
     end
 
     private

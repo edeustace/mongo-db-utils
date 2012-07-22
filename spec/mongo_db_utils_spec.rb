@@ -2,9 +2,9 @@ require 'mongo-db-utils/models'
 
 
 describe MongoDbUtils::Model do
-  
+
   it "should parse mongo uris" do
-  
+
     uri = "mongodb://localhost:27017/ed-backup"
     db = MongoDbUtils::Model::Db.from_uri(uri)
     db.to_s.should eql(uri)
@@ -14,9 +14,9 @@ describe MongoDbUtils::Model do
     db.username.should eql("")
 
   end
-  
+
   it "should parse mongo uris" do
-  
+
     uri = "mongodb://ed:password@localhost:27017/ed-backup"
     db = MongoDbUtils::Model::Db.from_uri(uri)
     db.to_s.should eql(uri)
@@ -28,8 +28,8 @@ describe MongoDbUtils::Model do
 
   end
 
-  it "should return nil if its a bad uri" do 
-  
+  it "should return nil if its a bad uri" do
+
     uri = ""
     db = MongoDbUtils::Model::Db.from_uri(uri)
     db.should be(nil)
@@ -43,9 +43,9 @@ describe MongoDbUtils::Model do
     end
   end
 
-  
+
   it "config should add dbs" do
-    config = MongoDbUtils::Model::Config.new 
+    config = MongoDbUtils::Model::Config.new
     config.writer = MockWriter.new
 
     config.add_db_from_uri("mongodb://blah:3333/blah")
@@ -55,4 +55,3 @@ describe MongoDbUtils::Model do
   end
 
 end
-

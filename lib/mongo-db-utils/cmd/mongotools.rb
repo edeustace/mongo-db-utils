@@ -14,10 +14,10 @@ module MongoDbUtils
       end
     end
 
-    class MongoDump
+    class MongoTools
 
       def self.dump(host,port,db,output,username = "", password = "")
-        
+
         options = []
         options << Option.new("-h", "#{host}:#{port}")
         options << Option.new("-db", db)
@@ -35,8 +35,6 @@ module MongoDbUtils
         `#{cmd}`
 
       end
-
     end
   end
 end
-
