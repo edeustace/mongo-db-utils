@@ -2,6 +2,8 @@
 
 A little gem that simplifies backing up and copying your mongo dbs.
 
+![Sample](https://github.com/edeustace/mongo-db-utils/raw/master/images/sample.png)
+
 It saves your database urls so any task is just a few clicks.
 
 * backup a database
