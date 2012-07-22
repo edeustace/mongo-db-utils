@@ -11,23 +11,18 @@ It saves your database urls so any task is just a few clicks.
 
 ## Installation
 
-You need to have mongorestore and mongodump on your path.
+You need to have mongodump on your path.
 
-Add this line to your application's Gemfile:
-
-    gem 'mongo-db-utils'
+    gem install 'mongo-db-utils'
 
 And then execute:
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install mongo-db-utils
+    $ mongo-db-utils console
 
 ## Usage
+Once you launch the console it'll provide you with a set of options - pretty self explanatory.
+When it does backups it stores them in ````~/.mongo-db-utils/backups/````. The naming convention is ````${server}_${port}/${database_name}/${timestamp}/db````
 
-TODO: Write usage instructions here
 
 ## Building source
 
