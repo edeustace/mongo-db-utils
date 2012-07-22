@@ -6,7 +6,7 @@ module MongoDbUtils
     def self.backup(db, path)
       t = Time.new
       timestamp = t.strftime("%Y.%m.%d__%H.%M")
-      out_path = "#{path}/{db.host}_#{db.port}/#{db.name}/#{timestamp}"
+      out_path = "#{path}/#{db.host}_#{db.port}/#{db.name}/#{timestamp}"
       full_path = File.expand_path(out_path)
       
       FileUtils.mkdir_p(full_path)

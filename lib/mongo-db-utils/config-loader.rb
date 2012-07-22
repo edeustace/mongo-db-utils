@@ -6,7 +6,7 @@ module MongoDbUtils
     CONFIG_LOCATION = "#{ROOT_FOLDER}/config.yml"
 
     def self.load(load_path = CONFIG_LOCATION)
-      full_path = self.expand(load_path)
+      full_path = File.expand_path(load_path)
       puts "loading config from #{full_path}"
 
       if File.exist?(full_path) && YAML.load(File.open(full_path))
@@ -33,19 +33,14 @@ module MongoDbUtils
     end
 
     def self.save(config, path = CONFIG_LOCATION)
-      self._save(config, self.expand(path))
-    end
-
-    private 
-    def self._save(config,full_path)
-      
       raise "config is nil" if config.nil?
 
-      File.open( full_path, 'w' ) do |out|
+      File.open( File.expand_path(path), 'w' ) do |out|
         YAML.dump( config, out )
       end
     end
 
+    private 
     def self.get_folder_name(path)
       /(.*)\/.*.yml/.match(path)[1]
     end
@@ -56,8 +51,5 @@ module MongoDbUtils
       FileUtils.touch(path)
     end
 
-    def self.expand(p)
-      File.expand_path("~/#{p}")
-    end
   end
 end
