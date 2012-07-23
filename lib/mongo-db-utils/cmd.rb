@@ -40,7 +40,7 @@ module MongoDbUtils
         `rm -fr #{full_path}/#{db.name}`
       end
 
-      true
+      "#{full_path}/#{db.name}.tar"
     end
 
     # With remote dbs you can't do a copy_database if you're not an admin.
