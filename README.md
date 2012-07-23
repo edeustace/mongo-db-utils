@@ -8,8 +8,10 @@ A little gem that simplifies backing up and copying your mongo dbs.
 
 It saves your database urls so any task is just a few clicks.
 
-* backup a database
-* copy a database from one server to another (whilst backing up the target db if it exists)
+* backup a database locally
+* backup a database and deploy it to Amazon S3
+* copy a database from one server to another (whilst backing up locally the target db if it exists)
+
 
 
 

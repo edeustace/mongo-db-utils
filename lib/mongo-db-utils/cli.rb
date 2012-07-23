@@ -30,7 +30,13 @@ module MongoDbUtils
       db = MongoDbUtils::Model::Db.from_uri(mongo_uri)
       raise "can't parse uri" if db.nil?
       tar_file = MongoDbUtils::Cmd.backup(db, @config.backup_folder)
-      MongoDbUtils::S3::put_file(tar_file, bucket_name, access_key_id, secret_access_key)
+
+      name = tar_file.gsub(File.expand_path(@config.backup_folder), "")
+
+      MongoDbUtils::S3::put_file(tar_file, name, bucket_name, access_key_id, secret_access_key)
+      file = File.basename(tar_file)
+      folder = tar_file.gsub(file, "")
+      `rm -fr #{folder}`
     end
 
   end
