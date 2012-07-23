@@ -73,6 +73,14 @@ module MongoDbUtils
         Db.new(name,host,port,user,pwd)
       end
 
+      def authentication_required?
+        has?(self.username) && has?(self.password)
+      end
+
+      def has?(s)
+        !s.nil? && !s.empty?
+      end
+
 
       def to_s
         user_pass = ""

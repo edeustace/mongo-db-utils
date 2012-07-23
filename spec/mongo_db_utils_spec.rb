@@ -13,6 +13,8 @@ describe MongoDbUtils::Model do
     db.name.should eql("ed-backup")
     db.username.should eql("")
 
+    db.authentication_required?.should eql(false)
+
   end
 
   it "should parse mongo uris" do
@@ -25,6 +27,7 @@ describe MongoDbUtils::Model do
     db.name.should eql("ed-backup")
     db.username.should eql("ed")
     db.password.should eql("password")
+    db.authentication_required?.should eql(true)
 
   end
 

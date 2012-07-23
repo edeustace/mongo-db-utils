@@ -10,6 +10,7 @@ module MongoDbUtils
 Mongo Db Utils - Version: #{MongoDbUtils::VERSION}
 ===================================
 eos
+   
 
     def initialize(config, cmd)
       @config = config
@@ -18,6 +19,7 @@ eos
 
     def run
       say(HEADER)
+      say(MongoDbUtils::READY_FOR_USE)
       main_menu
     end
 
@@ -77,7 +79,8 @@ eos
     def add_config
       entry = Hash.new
       entry[:mongo_uri] = ask("Mongo uri (eg: 'mongodb://user:pass@locahost:27017/db')")
-      successful = @config.add_db_from_uri(entry[:mongo_uri])
+      new_uri = entry[:mongo_uri].gsub(" ", "")
+      successful = @config.add_db_from_uri(new_uri)
 
       if successful
         say("added server")
@@ -99,7 +102,7 @@ eos
       choose do |menu|
         prep_menu(menu)
         @config.dbs.each do |db|
-          menu.choice "#{db.to_s_simple}" do backup(db) end
+          menu.choice "#{db.to_s}" do backup(db) end
         end
         menu.choice "back" do main_menu end
       end
@@ -114,7 +117,7 @@ eos
       choose do |menu|
         prep_menu(menu)
         @config.dbs.sort.each do |db|
-          menu.choice "#{db.to_s_simple}" do 
+          menu.choice "#{db.to_s}" do 
             copy_plan[:source] = db 
           end
         
@@ -130,7 +133,7 @@ eos
       choose do |menu|
         prep_menu(menu)
         @config.dbs.sort.each do |db|
-          menu.choice "#{db.to_s_simple}" do 
+          menu.choice "#{db.to_s}" do 
             copy_plan[:destination] = db
           end unless db == copy_plan[:source]
         end
@@ -141,7 +144,7 @@ eos
 
     def show_copy_plan(plan)
       say("Copy: (we'll backup the destination before we copy)")
-      say("#{plan[:source].to_s_simple} --> #{plan[:destination].to_s_simple}")
+      say("#{plan[:source].to_s} --> #{plan[:destination].to_s}")
 
       choose do |menu|
         prep_menu(menu)

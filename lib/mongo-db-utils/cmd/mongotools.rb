@@ -35,6 +35,28 @@ module MongoDbUtils
         `#{cmd}`
 
       end
+
+
+      def self.restore(host,port,db,source_folder,username = "", password = "")
+
+        options = []
+        options << Option.new("-h", "#{host}:#{port}")
+        options << Option.new("-db", db)
+        options << Option.new("-u", username)
+        options << Option.new("-p", password)
+
+        cmd = "mongorestore "
+
+        options.each do |o|
+          cmd << "#{o.key} #{o.value} " unless o.empty?
+        end
+        cmd << "#{source_folder}"
+        puts "cmd:"
+        puts cmd
+        `#{cmd}`
+
+      end
+
     end
   end
 end
