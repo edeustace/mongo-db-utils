@@ -15,7 +15,7 @@ It saves your database urls so any task is just a few clicks.
 
 ## Installation
 
-You need to have mongodump on your path.
+You need to have *mongodump* and *mongorestore* on your path.
 
     gem install 'mongo-db-utils'
 
@@ -37,10 +37,3 @@ When it does backups it stores them in ````~/.mongo-db-utils/backups/````. The n
     rake build
     gem install pkg/mongo-db-utils.gem
 
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Added some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
