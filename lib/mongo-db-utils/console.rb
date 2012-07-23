@@ -6,11 +6,11 @@ module MongoDbUtils
   class Console
 
     HEADER = <<-eos
-===================================
-Mongo Db Utils - Version: #{MongoDbUtils::VERSION}
-===================================
-eos
-   
+    ===================================
+      Mongo Db Utils - Version: #{MongoDbUtils::VERSION}
+      ===================================
+      eos
+
 
     def initialize(config, cmd)
       @config = config
@@ -33,6 +33,7 @@ eos
         menu.choice "remove config" do remove_config end
         menu.choice "show config" do show_config end
         menu.choice "add server to config" do add_config end
+        menu.choice "remove server from config" do remove_server_from_config end
         menu.choice "exit" do say("goodbye") end
       end
     end
@@ -70,7 +71,7 @@ eos
       say("--------------------")
       say("#{@config.backup_folder}")
       say("--------------------")
-      choose do |menu| 
+      choose do |menu|
         prep_menu(menu)
         menu.choice "back" do main_menu end
       end
@@ -109,6 +110,20 @@ eos
     end
 
 
+    def remove_server_from_config
+      say("remove server from config...")
+      choose do |menu|
+        prep_menu(menu)
+        @config.dbs.sort.each do |db|
+          menu.choice "#{db.to_s}" do
+            @config.remove_db(db)
+            remove_server_from_config
+          end
+        end
+        menu.choice "back" do main_menu end
+      end
+    end
+
     def copy_a_db
 
       copy_plan = Hash.new
@@ -117,15 +132,15 @@ eos
       choose do |menu|
         prep_menu(menu)
         @config.dbs.sort.each do |db|
-          menu.choice "#{db.to_s}" do 
-            copy_plan[:source] = db 
+          menu.choice "#{db.to_s}" do
+            copy_plan[:source] = db
           end
-        
+
         end
         menu.choice "add server to config" do add_config end
-        menu.choice "back" do 
-          main_menu 
-          return 
+        menu.choice "back" do
+          main_menu
+          return
         end
       end
 
@@ -133,7 +148,7 @@ eos
       choose do |menu|
         prep_menu(menu)
         @config.dbs.sort.each do |db|
-          menu.choice "#{db.to_s}" do 
+          menu.choice "#{db.to_s}" do
             copy_plan[:destination] = db
           end unless db == copy_plan[:source]
         end
@@ -149,8 +164,8 @@ eos
       choose do |menu|
         prep_menu(menu)
         menu.choice "Begin" do begin_copy(plan) end
-        menu.choice "Reverse" do 
-          show_copy_plan( {:source => plan[:destination], :destination => plan[:source]}) 
+        menu.choice "Reverse" do
+          show_copy_plan( {:source => plan[:destination], :destination => plan[:source]})
         end
         menu.choice "Back" do main_menu end
       end
@@ -175,4 +190,3 @@ eos
 
   end
 end
-

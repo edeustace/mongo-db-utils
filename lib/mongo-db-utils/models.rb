@@ -19,6 +19,11 @@ module MongoDbUtils
         @writer.flush
       end
 
+      def remove_db(db)
+        @dbs = @dbs - [db]
+        @writer.save(self)
+      end
+
       def add_db_from_uri(uri)
         @dbs = [] if @dbs.nil?
         db = Db.from_uri(uri)
