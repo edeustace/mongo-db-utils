@@ -34,7 +34,12 @@ Only works on ruby 1.9.3 (to_yaml is throwing an error in earlier versions)
 Once you launch the console it'll provide you with a set of options - pretty self explanatory.
 When it does backups it stores them in ````~/.mongo-db-utils/backups/````. The naming convention is ````${server}_${port}/${database_name}/${timestamp}/db````
 
-
+## Testing
+    
+    bundle exec cucumber features
+    
+    bundle exec rspec spec
+    
 ## Building source
 
     #run console
