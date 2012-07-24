@@ -18,7 +18,8 @@ module MongoDbUtils
       if( final_path.nil? )
         out_path = "#{folder}/#{db.host}_#{db.port}/#{db.name}/#{timestamp}"
       else
-        puts "final path not nil out_path: #{out_path}"
+        puts "final path not nil final_path: #{final_path}"
+        out_path = final_path
       end
 
       full_path = File.expand_path(out_path)
@@ -38,9 +39,10 @@ module MongoDbUtils
         Dir.chdir(full_path)
         `tar cvf #{db.name}.tar #{db.name}`
         `rm -fr #{full_path}/#{db.name}`
+        "#{full_path}/#{db.name}.tar"
+      else
+        "#{full_path}/#{db.name}"
       end
-
-      "#{full_path}/#{db.name}.tar"
     end
 
     # With remote dbs you can't do a copy_database if you're not an admin.
@@ -68,17 +70,17 @@ module MongoDbUtils
       FileUtils.mkdir_p(tmp_path)
 
       puts "backup to: #{tmp_path}/#{source.name}"
-      backup(source,tmp_path, source.name, false)
+      tmp_dump_path = backup(source,tmp_path, source.name, false)
 
       MongoDbUtils::Commands::MongoTools.restore(
         destination.host,
         destination.port,
         destination.name,
-        "#{tmp_path}/#{source.name}/#{source.name}",
+        "#{tmp_dump_path}",
         destination.username,
       destination.password)
 
-      `rm -fr #{tmp_path}`
+      #`rm -fr #{tmp_path}`
     end
 
 
