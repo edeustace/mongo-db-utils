@@ -47,13 +47,18 @@ describe MongoDbUtils::Model do
   end
 
 
-  it "config should add dbs" do
+  it "config should add dbs only if they are different" do
     config = MongoDbUtils::Model::Config.new
     config.writer = MockWriter.new
 
-    config.add_db_from_uri("mongodb://blah:3333/blah")
+    config.add_db_from_uri("mongodb://blah:3333@server:123/blah")
     config.dbs.length.should eql(1)
-    config.add_db_from_uri("mongodb://blah:3333/blah")
+    config.add_db_from_uri("mongodb://blah:3333@server:123/blah")
+    config.dbs.length.should eql(1)
+    # still the same server + name
+    config.add_db_from_uri("mongodb://server:123/blah")
+    config.dbs.length.should eql(1)
+     config.add_db_from_uri("mongodb://server2:123/blah")
     config.dbs.length.should eql(2)
   end
 

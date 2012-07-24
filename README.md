@@ -12,9 +12,6 @@ It saves your database urls so any task is just a few clicks.
 * backup a database and deploy it to Amazon S3
 * copy a database from one server to another (whilst backing up locally the target db if it exists)
 
-
-
-
 ## Installation
 
 You need to have *mongodump* and *mongorestore* on your path.
@@ -36,9 +33,10 @@ When it does backups it stores them in ````~/.mongo-db-utils/backups/````. The n
 
 ## Testing
     
-    bundle exec cucumber features
-    
     bundle exec rspec spec
+
+    #cucumber can't handle interactive CLIs so need to wait on this.
+    #bundle exec cucumber features
     
 ## Building source
 

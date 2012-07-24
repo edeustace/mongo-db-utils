@@ -13,6 +13,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "mongo-db-utils"
   gem.require_paths = ["lib"]
+  gem.required_ruby_version = '>= 1.9.3'
   gem.version       = MongoDbUtils::VERSION
   gem.add_development_dependency "rspec", "~> 2.6"
   gem.add_development_dependency "cucumber"

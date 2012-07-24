@@ -2,17 +2,23 @@ module MongoDbUtils
 
   module Model
     class Config
-      attr_reader :dbs
+      attr_reader :dbs, :buckets
       attr_writer :writer
       attr_accessor :backup_folder
 
       def initialize
         @dbs = []
+        @buckets = []
       end
       
       def empty?
         @dbs.nil? || @dbs.empty?
       end
+
+      def has_buckets?
+        !@buckets.nil? && !@buckets.empty?
+      end
+
 
       def flush
         @dbs = []
@@ -27,13 +33,48 @@ module MongoDbUtils
       def add_db_from_uri(uri)
         @dbs = [] if @dbs.nil?
         db = Db.from_uri(uri)
-        unless db.nil?
+        unless db.nil? || already_contains(db)
           @dbs << db
           @dbs.sort!
           @writer.save(self)
         end
         !db.nil?
       end
+
+      def already_contains(db)
+        @dbs.each do |existing|
+          if( existing.to_s == db.to_s)
+            return true
+          end
+
+          if( existing.host == db.host && existing.name == db.name)
+            return true
+          end
+
+        end
+        return false
+      end
+
+      # because we are serializing the config - the bucket may be nil
+      # at this point
+      def add_bucket(bucket)
+        @buckets = [] if @buckets.nil?
+        unless bucket.nil? || already_contains_bucket?(bucket)
+          @buckets << bucket
+          @writer.save(self)
+        end
+      end
+
+      def already_contains_bucket?(bucket)
+        puts "@buckets: #{@buckets}"
+        @buckets.each do |b|
+          if( b.to_s == bucket.to_s )
+            return true
+          end
+        end
+        return false
+      end
+
 
       def save
         @writer.save(self)
@@ -44,6 +85,14 @@ module MongoDbUtils
       end
     end
 
+    class Bucket
+      attr_accessor :name, :access_key, :secret_key
+
+      def to_s
+        "#{name} | #{access_key} | #{secret_key}"
+      end
+        
+    end
 
     # A Db stored in the config
     class Db
@@ -96,7 +145,7 @@ module MongoDbUtils
       end
 
       def to_s_simple
-        "#{@host}:#{@port}/#{@name}"
+        "#{@name} on #{@host}:#{@port} - (#{@username}:#{@password})"
       end
 
       def <=>(other)
