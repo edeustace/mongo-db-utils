@@ -88,6 +88,8 @@ module MongoDbUtils
       puts "DB exists? #{db.to_s}"
 
       connection = Mongo::Connection.from_uri(db.to_s)
+
+      puts "db.name: #{db.name}"
       mongo_db = connection[db.name]
 
       exists = !mongo_db.nil?

@@ -1,4 +1,5 @@
 require 'mongo-db-utils/models'
+require 'yaml'
 
 module MongoDbUtils
 
