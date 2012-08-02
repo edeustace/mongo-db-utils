@@ -38,6 +38,8 @@ module MongoDbUtils
         options.each do |o|
           cmd << "#{o.key} #{o.value} " unless o.empty?
         end
+        #ensure that we drop everything before we restore.
+        cmd << "--drop "
         cmd << "#{source_folder}"
         `#{cmd}`
       end
