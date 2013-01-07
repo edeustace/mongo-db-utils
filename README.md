@@ -1,7 +1,5 @@
 # MongoDbUtils
 
-## Warning - not safe for production use - undergoing development!
-
 A little gem that simplifies backing up and copying your mongo dbs.
 
 You can run as a script (eg for cron jobs, or in interactive mode):
