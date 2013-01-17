@@ -20,9 +20,9 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "aruba"
   gem.add_dependency "highline", "~> 1.6.13"
   gem.add_dependency "thor"
-  gem.add_dependency "mongo"
-  gem.add_dependency "bson"
-  gem.add_dependency "bson_ext"
+  gem.add_dependency "mongo", "1.7.1"
+  gem.add_dependency "bson", "1.7.1"
+  gem.add_dependency "bson_ext", "1.7.1"
   gem.add_dependency "aws-s3", "~> 0.6.3"
   
 end
