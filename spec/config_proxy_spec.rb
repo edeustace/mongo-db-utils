@@ -23,7 +23,7 @@ describe MongoDbUtils::ConfigProxy do
 
   it "should add a single db" do
     db = HighLine::String.new("mongodb://localhost:27017/db   ")
-    @config.add_db(db)
+    @config.add_single_db(db)
     @config.dbs.length.should == 1
     @config.dbs[0].uri.should == "mongodb://localhost:27017/db"
     @config.dbs[0].uri.class.to_s.should == "String"

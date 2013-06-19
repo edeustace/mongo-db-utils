@@ -35,7 +35,7 @@ module MongoDbUtils
       end
 
 
-      def add_db(uri)
+      def add_single_db(uri)
         add_db Db.new(uri)
       end
 
