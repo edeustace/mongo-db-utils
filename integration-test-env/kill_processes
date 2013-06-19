@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require 'yaml'
+require 'fileutils'
+
+path = ARGV[0]
+
+puts "kill processes: #{path}"
+
+full_path = File.expand_path(path)
+
+if File.exist?(full_path) && YAML.load(File.open(full_path))
+  pids = YAML.load(File.open(full_path))
+  puts "found pids: #{pids}"
+  pids.each{ |pid| `kill -9 #{pid}` }
+  FileUtils.rm full_path
+else
+  puts "couldn't find path"
+end

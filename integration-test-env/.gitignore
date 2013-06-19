@@ -1,2 +1,4 @@
 .processes
 dbs
+logs
+rs_config

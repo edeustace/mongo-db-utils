@@ -1,0 +1,21 @@
+--- &1 !ruby/object:MongoDbUtils::Model::Config
+dbs:
+- !ruby/object:MongoDbUtils::Model::ReplicaSetDb
+  host_port: localhost:27020,localhost:27021,localhost:27022
+  name: dummy
+  username: ''
+  password: ''
+  uri: mongodb://localhost:27020,localhost:27021,localhost:27022/dummy
+  set_name: rs0
+- !ruby/object:MongoDbUtils::Model::ReplicaSetDb
+  host_port: localhost:27023,localhost:27024,localhost:27025
+  name: dummy
+  username: ''
+  password: ''
+  uri: mongodb://localhost:27023,localhost:27024,localhost:27025/dummy
+  set_name: rs1
+buckets: []
+writer: !ruby/object:MongoDbUtils::ConfigLoader
+  config_path: integration-test-env/replica_sets/config.yml
+  config: *1
+backup_folder: ~/.mongo-db-utils/backups

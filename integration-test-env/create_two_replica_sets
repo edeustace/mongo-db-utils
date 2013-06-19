@@ -1,0 +1,76 @@
+#!/usr/bin/env ruby
+
+require_relative './helper'
+require 'yaml'
+require 'fileutils'
+require 'mongo'
+=begin
+mkdir -p /srv/mongodb/rs0-0 /srv/mongodb/rs0-1 /srv/mongodb/rs0-2
+Issue the following commands, each in a distinct screen window:
+mongod --port 27017 --dbpath /srv/mongodb/rs0-0 --replSet rs0 --smallfiles --oplogSize 128
+mongod --port 27018 --dbpath /srv/mongodb/rs0-1 --replSet rs0 --smallfiles --oplogSize 128
+mongod --port 27019 --dbpath /srv/mongodb/rs0-2 --replSet rs0 --smallfiles --oplogSize 128
+=end
+
+ROOT_FOLDER = "./replica_sets"
+maker = MongoEnvMaker.new(ROOT_FOLDER)
+
+puts "Creating 2 replica sets: 27020-27022 & localhost:27023-27025"
+puts "create the directories"
+
+maker.spawn(27020, "rs0")
+maker.spawn(27021, "rs0")
+maker.spawn(27022, "rs0")
+
+maker.spawn(27023, "rs1")
+maker.spawn(27024, "rs1")
+maker.spawn(27025, "rs1")
+
+puts ">>>>>>>>>>> pid: #{maker.pids}"
+
+File.open( File.expand_path("./#{ROOT_FOLDER}/.processes"), 'w' ) do |out|
+  YAML.dump( maker.pids, out )
+end
+
+def initiate_conf(host, set_name, port)
+  "rs.initiate({_id: '#{set_name}', members: [{_id: 0, host: '#{host}:#{port}'} ] });"
+end
+
+def add_member(host, port)
+"rs.add('#{host}:#{port}')"
+end
+
+def shellscript( base_port, commands )
+  sleep_between_add_members = 4
+  evals = commands.map{ |cmd|  "mongo --port #{base_port} --eval \"#{cmd}\"\nsleep #{sleep_between_add_members}\n"}
+  out = <<-eos
+#{evals.join("\n")}
+eos
+  out
+end
+
+def wrap(s)
+  <<-eos
+#!/usr/bin/env bash
+#{s}
+eos
+end
+
+set_one = shellscript( 27020,
+  [
+    initiate_conf("localhost", "rs0", 27020),
+    add_member("localhost", 27021),
+    add_member("localhost", 27022) ])
+
+set_two = shellscript( 27023,
+    [initiate_conf("localhost", "rs1", 27023),
+    add_member("localhost", 27024),
+    add_member("localhost", 27025)] )
+
+path = "#{ROOT_FOLDER}/rs_config"
+
+File.open(path, 'w'){ |f| f.write( wrap("#{set_one}\n#{set_two}"))}
+
+FileUtils.chmod 0755, path
+
+puts "Done --- Important - you now need to run: #{path} - note you may have to run it a couple of times"
