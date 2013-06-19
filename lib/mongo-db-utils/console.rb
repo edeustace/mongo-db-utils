@@ -8,6 +8,7 @@ module MongoDbUtils
   # This is a workaround for this issue:
   # https://github.com/JEG2/highline/issues/69
   # In ruby 2 + highline the yaml strings don't get serialized correctly.
+  # The workaround is for any argument that is of type HighLine::String to call to_s on it
   class ConfigProxy
 
     def initialize(config)

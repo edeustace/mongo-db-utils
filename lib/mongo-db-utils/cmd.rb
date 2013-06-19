@@ -11,7 +11,7 @@ module MongoDbUtils
       end
 
       if( final_path.nil? )
-        out_path = "#{folder}/#{db.host}_#{db.port}/#{db.name}/#{timestamp}"
+        out_path = "#{folder}/#{db.to_host_s}/#{db.name}/#{timestamp}"
       else
         out_path = "#{folder}/#{final_path}"
       end
@@ -22,12 +22,11 @@ module MongoDbUtils
 
       FileUtils.mkdir_p(full_path)
       MongoDbUtils::Tools::Dump.run(
-        db.host,
-        db.port,
+        db.to_host_s,
         db.name,
         full_path,
         db.username,
-      db.password)
+        db.password)
 
       if( tar_it )
         Dir.chdir(full_path)
@@ -40,14 +39,6 @@ module MongoDbUtils
     end
 
     # With remote dbs you can't do a copy_database if you're not an admin.
-    # so using restore instead
-    #  connection = Mongo::Connection.from_uri(destination.to_s)
-    # mongo_db = connection[destination.name]
-    # if( destination.authentication_required? )
-    #  login_result = mongo_db.authenticate(destination.username, destination.password)
-    # end
-    # host = "#{source.host}:#{source.port}"
-    # connection.copy_database(source.name, destination.name, host, source.username, source.password)
     def self.copy(path, source, destination, halt_on_no_backup = true)
 
       backup_made = backup(destination, path)
@@ -76,8 +67,7 @@ module MongoDbUtils
       end
 
       MongoDbUtils::Tools::Restore.run(
-        destination.host,
-        destination.port,
+        destination.to_host_s,
         destination.name,
         "#{tmp_dump_path}",
         username,
@@ -105,7 +95,7 @@ module MongoDbUtils
 
     def self.db_exists?(db)
       puts "DB exists? #{db.to_s}"
-      connection = Mongo::Connection.from_uri(db.to_s)
+      connection = Mongo::Connection.from_uri(db.uri)
       exists = true
       begin
         connection.ping

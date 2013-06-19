@@ -25,6 +25,8 @@ describe MongoDbUtils::ConfigProxy do
     db = HighLine::String.new("mongodb://localhost:27017/db   ")
     @config.add_db_from_uri(db)
     @config.dbs.length.should == 1
+    @config.dbs[0].uri.should == "mongodb://localhost:27017/db"
+    @config.dbs[0].uri.class.to_s.should == "String"
   end
 
 

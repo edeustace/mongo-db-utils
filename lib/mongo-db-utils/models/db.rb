@@ -7,7 +7,7 @@ module MongoDbUtils
       URI_NO_USER = /mongodb:\/\/(.*)\/(.*$)/
       URI_USER = /mongodb:\/\/(.*):(.*)@(.*)\/(.*$)/
 
-      attr_accessor :host_port, :username, :password, :name, :uri
+      attr_accessor :username, :password, :name, :uri
 
       def initialize(uri)
         user,pwd,host_port,db = nil
@@ -33,6 +33,12 @@ module MongoDbUtils
         has?(self.username) && has?(self.password)
       end
 
+      # Return the host string in a format that is compatable with mongo binary tools
+      # See: http://docs.mongodb.org/manual/reference/program/mongodump/#cmdoption-mongodump--host
+      def to_host_s
+        "#{@host_port}"
+      end
+
       def to_s_simple
         "#{@name} on #{@host_port} - (#{@username}:#{@password})"
       end
@@ -56,7 +62,8 @@ module MongoDbUtils
         @set_name = name
       end
 
-      def to_host_format
+      # Note: we override this to provide a replica set format
+      def to_host_s
         "#{@set_name}/#{@host_port}"
       end
     end

@@ -1,0 +1,19 @@
+--- &1 !ruby/object:MongoDbUtils::Model::Config
+dbs:
+- !ruby/object:MongoDbUtils::Model::Db
+  host_port: localhost:27018
+  name: dummy
+  username: ''
+  password: ''
+  uri: mongodb://localhost:27018/dummy
+- !ruby/object:MongoDbUtils::Model::Db
+  host_port: localhost:27019
+  name: dummy
+  username: ''
+  password: ''
+  uri: mongodb://localhost:27019/dummy
+buckets: []
+writer: !ruby/object:MongoDbUtils::ConfigLoader
+  config_path: integration-test-env/standalone/config.yml
+  config: *1
+backup_folder: ~/.mongo-db-utils/backups
