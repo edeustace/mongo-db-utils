@@ -35,3 +35,16 @@ class MongoEnvMaker
     path
   end
 end
+
+
+class DummyData
+  def self.seed(host, port)
+    puts "[DummyData] Seed #{host}:#{port} with some dummy data"
+    include Mongo
+    mongo_client = MongoClient.new(host, port)
+    db = mongo_client.db("dummy")
+    coll = db.collection("some_collection")
+    doc = {"name" => "MongoDB", "type" => "database", "count" => 1, "info" => {"x" => 203, "y" => '102'}}
+    id = coll.insert(doc)
+  end
+end

@@ -41,7 +41,9 @@ module MongoDbUtils
 
       # run the command
       def self.run(host_and_port,db,output,username="", password ="")
-        `#{self.cmd(host_and_port,db,output,username,password)}`
+        cmd_string = self.cmd(host_and_port,db,output,username,password)
+        puts "[Dump] run: #{cmd_string}"
+        `#{cmd_string}`
       end
 
     end
@@ -54,7 +56,9 @@ module MongoDbUtils
       end
 
       def self.run(host_and_port,db,source_folder,username="", password ="")
-        `#{self.cmd(host_and_port,db,source_folder,username,password)}`
+        cmd_string = self.cmd(host_and_port,db,source_folder,username,password)
+        puts "[Restore] run: #{cmd_string}"
+        `#{cmd_string}`
       end
     end
 

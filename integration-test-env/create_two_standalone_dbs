@@ -1,51 +1,27 @@
 #!/usr/bin/env ruby
 
+require_relative './helper'
 require 'yaml'
 require 'fileutils'
 require 'mongo'
 
-module Config
-  RootFolder = "./standalone"
-end
+ROOT_FOLDER = "./standalone"
+maker = MongoEnvMaker.new(ROOT_FOLDER)
 
 puts "Creating 2 standalone dbs: localhost:27018 & localhost:27019"
 puts "create the directories"
 
-def mongod(port)
-  path = mk_db_dir(port)
-  "mongod --port #{port} --dbpath #{path} --smallfiles --oplogSize 128"
+maker.spawn(27018)
+maker.spawn(27019)
+
+puts ">> pids: #{maker.pids}"
+
+File.open( File.expand_path("./#{ROOT_FOLDER}/.processes"), 'w' ) do |out|
+  YAML.dump( maker.pids, out )
 end
-
-def mk_db_dir(port)
-  path = "#{Config::RootFolder}/dbs/#{port}"
-  FileUtils.rm_rf path
-  `mkdir -p #{path}`
-  path
-end
-
-pid_one = Process.spawn mongod(27018)
-pid_two = Process.spawn mongod(27019)
-
-puts "pid one: #{pid_one}"
-puts "pid two: #{pid_two}"
-
-File.open( File.expand_path("./#{Config::RootFolder}/.processes"), 'w' ) do |out|
-  YAML.dump( [pid_one, pid_two], out )
-end
-
 
 sleep 2
 
 puts "Seed 27018 with some data..."
-
-include Mongo
-
-mongo_client = MongoClient.new("localhost", 27018)
-db = mongo_client.db("dummy")
-coll = db.collection("some_collection")
-doc = {"name" => "MongoDB", "type" => "database", "count" => 1, "info" => {"x" => 203, "y" => '102'}}
-id = coll.insert(doc)
-
-puts "created a document in 27018 with id: #{id}"
-
+DummyData.seed("localhost", 27018)
 

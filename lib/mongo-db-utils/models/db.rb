@@ -66,6 +66,10 @@ module MongoDbUtils
       def to_host_s
         "#{@set_name}/#{@host_port}"
       end
+
+      def to_s
+        "[ReplicaSetDb-(#{to_host_s}/#{@name})]"
+      end
     end
 
 

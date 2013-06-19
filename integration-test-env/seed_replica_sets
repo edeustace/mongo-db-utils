@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+require 'mongo'
+
+include Mongo
+
+dbs = (27020..27022).to_a.map{ |n| "localhost:#{n}"}
+mongo_client = MongoReplicaSetClient.new(dbs)
+
+db = mongo_client.db("dummy")
+coll = db.collection("some_collection")
+doc = {"name" => "MongoDB", "type" => "database", "count" => 1, "info" => {"x" => 203, "y" => '102'}}
+id = coll.insert(doc)
+
+puts "successfully inserted: #{id}"
