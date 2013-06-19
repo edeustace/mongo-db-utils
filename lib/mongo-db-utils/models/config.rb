@@ -57,10 +57,6 @@ module MongoDbUtils
         !@buckets.find{ |b| b.to_s == bucket.to_s}.nil?
       end
 
-      def to_s
-        "Config"
-      end
-
       private
       def save
         @writer.save(self) unless @writer.nil?
@@ -68,7 +64,7 @@ module MongoDbUtils
 
       def add_db(db)
         @dbs = [] if @dbs.nil?
-        unless db.nil? || already_contains(db)
+        unless already_contains(db)
           @dbs << db
           @dbs.sort!
           save
