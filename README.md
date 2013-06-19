@@ -43,7 +43,7 @@ When it does backups it stores them in ````~/.mongo-db-utils/backups/````. The n
 ## Building source
 
     #run console
-    bundle exec bin/mongo-db-utils console
+    bundle exec bin/mongo-db-utils console path_to/config.yml (optional)
 
     #install the gem locally
     rake build
