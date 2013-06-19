@@ -4,6 +4,41 @@ Dir['lib/mongo-db-utils/models/*.rb'].each {|file| require file.gsub("lib/", "")
 
 
 module MongoDbUtils
+
+  # This is a workaround for this issue:
+  # https://github.com/JEG2/highline/issues/69
+  # In ruby 2 + highline the yaml strings don't get serialized correctly.
+  class ConfigProxy
+
+    def initialize(config)
+      @config = config
+    end
+
+    protected
+        def method_missing(name, *args, &block)
+          cleaned_args = args.map{ |a| trim(clean(a)) }
+          cleaned_args.each{ |a| puts "#{a} -> #{a.class}"}
+          @config.send(name, *cleaned_args, &block)
+        end
+
+        def clean(a)
+          if a.class.to_s == "HighLine::String"
+            a.to_s
+          else
+            a
+          end
+        end
+
+        def trim(s)
+          if(s.class.to_s == "String")
+            s.strip
+          else
+            s
+          end
+        end
+  end
+
+
   class Console
 
     HEADER = <<-eos
@@ -14,7 +49,7 @@ eos
 
 
     def initialize(config, cmd)
-      @config = config
+      @config = ConfigProxy.new(config)
       @cmd = cmd
     end
 
@@ -136,9 +171,8 @@ eos
     end
 
     def add_single_db
-      entry = Hash.new
-      entry[:mongo_uri] = ask("Mongo uri (eg: 'mongodb://user:pass@locahost:27017/db')")
-      new_uri = entry[:mongo_uri].gsub(" ", "")
+      mongo_uri = ask("Mongo uri (eg: 'mongodb://user:pass@locahost:27017/db')")
+      new_uri = mongo_uri.to_s.strip
       successful = @config.add_db_from_uri(new_uri)
 
       say("bad uri!") unless successful
@@ -151,7 +185,7 @@ eos
     end
 
     def add_replica_set
-      mongo_uri = ask("Replica Set uri: (eg: mongodb://user:pass@host1:port,host2:port,.../db)
+      mongo_uri = ask("Replica Set uri: (eg: mongodb://user:pass@host1:port,host2:port,.../db)1
 ")
       replica_set_name = ask("Replica Set name: ")
 
@@ -163,6 +197,7 @@ eos
         menu.choice (successful ? "add another" : "try again?") do add_config end
       end
     end
+
 
     def remove_server_from_config
       db_list_menu("Remove server from config:") do |db|
@@ -229,6 +264,11 @@ eos
           menu.choice "#{bucket}" do yield bucket if block_given? end
         end
       end
+    end
+
+    private
+    def clean(s)
+      s.to_s.strip
     end
 
   end
