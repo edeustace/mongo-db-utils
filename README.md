@@ -27,7 +27,7 @@ And then execute:
 
 ## Limitatons
 
-Only works on ruby 1.9.3 (to_yaml is throwing an error in earlier versions)
+ruby >= 1.9.3 
 
 ## Usage
 Once you launch the console it'll provide you with a set of options - pretty self explanatory.
@@ -43,7 +43,7 @@ When it does backups it stores them in ````~/.mongo-db-utils/backups/````. The n
 ## Building source
 
     #run console
-    bundle exec bin/mongo-db-utils console path_to/config.yml (optional)
+    bundle exec bin/mongo-db-utils console path_to/config.yml (optional - it defaults to ~/.mongo-db-utils/config.yml)
 
     #install the gem locally
     rake build
