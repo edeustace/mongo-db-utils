@@ -32,12 +32,12 @@ Once you launch the console it'll provide you with a set of options - pretty sel
 When it does backups it stores them in ````~/.mongo-db-utils/backups/````. The naming convention is ````${server}_${port}/${database_name}/${timestamp}/db````
 
 ## Testing
-    
+
     bundle exec rspec spec
 
     #cucumber can't handle interactive CLIs so need to wait on this.
     #bundle exec cucumber features
-    
+
 ## Building source
 
     #run console
@@ -47,3 +47,16 @@ When it does backups it stores them in ````~/.mongo-db-utils/backups/````. The n
     rake build
     gem install pkg/mongo-db-utils.gem
 
+
+
+## Release Notes
+
+* 0.0.9.2 - BETA!
+  - Added support for Replica Sets
+  - console can be run pointing to any config file: `console myconfig.yml`
+  - More specs
+  - Added local mongo environment to simplify testing @see: integration-test-env
+
+* 0.0.9.1 - First release
+  - Copy mongo dbs
+  - Back up to S3

@@ -43,6 +43,10 @@ module MongoDbUtils
         "#{@name} on #{@host_port} - (#{@username}:#{@password})"
       end
 
+      def to_s
+        "[SingleDb-(#{to_host_s}/#{name})]"
+      end
+
       def <=>(other)
         self.to_s <=> other.to_s
       end
