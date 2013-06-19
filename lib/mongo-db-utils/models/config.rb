@@ -35,7 +35,7 @@ module MongoDbUtils
       end
 
 
-      def add_db_from_uri(uri)
+      def add_db(uri)
         add_db Db.new(uri)
       end
 
@@ -63,13 +63,14 @@ module MongoDbUtils
       end
 
       def add_db(db)
+        raise "nil db" if db.nil?
         @dbs = [] if @dbs.nil?
         unless already_contains(db)
           @dbs << db
           @dbs.sort!
           save
         end
-        @dbs.include?(db) && !db.nil?
+        @dbs.include?(db)
       end
 
     end

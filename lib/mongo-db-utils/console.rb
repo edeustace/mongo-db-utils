@@ -174,7 +174,7 @@ eos
     def add_single_db
       mongo_uri = ask("Mongo uri (eg: 'mongodb://user:pass@locahost:27017/db')")
       new_uri = mongo_uri.to_s.strip
-      successful = @config.add_db_from_uri(new_uri)
+      successful = @config.add_db(new_uri)
 
       say("bad uri!") unless successful
 

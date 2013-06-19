@@ -21,7 +21,7 @@ describe MongoDbUtils do
     it "should write a config correctly" do
       path = ".tmp_path/config2.yml"
       config = MongoDbUtils::ConfigLoader.new(path).config
-      config.add_db_from_uri("mongodb://localhost:27017/db")
+      config.add_db("mongodb://localhost:27017/db")
       loaded_config = YAML.load(File.open(path))
       loaded_config.dbs[0].uri.should == config.dbs[0].uri
     end

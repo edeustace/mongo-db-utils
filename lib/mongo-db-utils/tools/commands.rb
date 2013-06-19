@@ -4,6 +4,14 @@ module MongoDbUtils
 
   module Tools
 
+    class ToolsException < RuntimeError
+      attr :cmd, :output
+      def initialize(cmd, output)
+        @cmd = cmd
+        @output =output
+      end
+    end
+
     class BaseCmd
       private
       def self.o(key,value)
@@ -31,7 +39,6 @@ module MongoDbUtils
     end
 
     class Dump < BaseCmd
-
       # create the cmd string that will be executed by the system
       def self.cmd(host_and_port,db,output,username = "", password = "")
         options = build_base_options(host_and_port,db,username,password)
@@ -43,9 +50,9 @@ module MongoDbUtils
       def self.run(host_and_port,db,output,username="", password ="")
         cmd_string = self.cmd(host_and_port,db,output,username,password)
         puts "[Dump] run: #{cmd_string}"
-        `#{cmd_string}`
+        output = `#{cmd_string}`
+        raise ToolsException.new("#{cmd_string}", output) unless $?.to_i == 0
       end
-
     end
 
     class Restore < BaseCmd
@@ -58,7 +65,8 @@ module MongoDbUtils
       def self.run(host_and_port,db,source_folder,username="", password ="")
         cmd_string = self.cmd(host_and_port,db,source_folder,username,password)
         puts "[Restore] run: #{cmd_string}"
-        `#{cmd_string}`
+        output = `#{cmd_string}`
+        raise ToolsException.new("#{cmd_string}", output) unless $?.to_i == 0
       end
     end
 
@@ -75,6 +83,5 @@ module MongoDbUtils
         @value.nil? || @value.empty?
       end
     end
-
   end
 end
