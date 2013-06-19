@@ -1,6 +1,7 @@
 require 'highline/import'
 require 'mongo-db-utils/version'
-require 'mongo-db-utils/models'
+Dir['lib/mongo-db-utils/models/*.rb'].each {|file| require file.gsub("lib/", "") }
+
 
 module MongoDbUtils
   class Console
@@ -128,6 +129,13 @@ eos
     end
 
     def add_config
+      my_menu("Single db or replica set?") do |menu|
+        menu.choice "single db" do add_single_db end
+        menu.choice "replica set db" do add_replica_set end
+      end
+    end
+
+    def add_single_db
       entry = Hash.new
       entry[:mongo_uri] = ask("Mongo uri (eg: 'mongodb://user:pass@locahost:27017/db')")
       new_uri = entry[:mongo_uri].gsub(" ", "")
@@ -139,6 +147,20 @@ eos
 
       my_menu("") do |menu|
         menu.choice label do add_config end
+      end
+    end
+
+    def add_replica_set
+      mongo_uri = ask("Replica Set uri: (eg: mongodb://user:pass@host1:port,host2:port,.../db)
+")
+      replica_set_name = ask("Replica Set name: ")
+
+      successful = @config.add_replica_set(mongo_uri, replica_set_name)
+
+      say("bad replica set uri") unless successful
+
+      my_menu("") do |menu|
+        menu.choice (successful ? "add another" : "try again?") do add_config end
       end
     end
 

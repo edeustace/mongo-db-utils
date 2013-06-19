@@ -1,6 +1,5 @@
-require 'mongo-db-utils/cmd/mongotools'
+require 'mongo-db-utils/tools/commands'
 require 'mongo'
-require 'mongo/connection'
 
 module MongoDbUtils
   class Cmd
@@ -22,7 +21,7 @@ module MongoDbUtils
       puts ">> final backup path: #{full_path}"
 
       FileUtils.mkdir_p(full_path)
-      MongoDbUtils::Commands::MongoTools.dump(
+      MongoDbUtils::Tools::Dump.run(
         db.host,
         db.port,
         db.name,
@@ -76,7 +75,7 @@ module MongoDbUtils
         password = ""
       end
 
-      MongoDbUtils::Commands::MongoTools.restore(
+      MongoDbUtils::Tools::Restore.run(
         destination.host,
         destination.port,
         destination.name,
@@ -116,11 +115,6 @@ module MongoDbUtils
       connection.close
       exists
     end
-=begin
-       connection.database_names 
-      rescue Mongo::OperationFailure => e
-=end
-
 
   end
 end

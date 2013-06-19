@@ -1,59 +1,68 @@
-require 'mongo-db-utils/models'
+project_root = File.dirname(File.absolute_path(__FILE__))
+
+Dir.glob(project_root + '/lib/mongo-db-utils/models/*', &method(:require))
+
 require 'yaml'
 
 module MongoDbUtils
 
   class ConfigLoader
-    
+
     ROOT_FOLDER = "~/.mongo-db-utils"
     CONFIG_LOCATION = "#{ROOT_FOLDER}/config.yml"
 
-    def self.load(load_path = CONFIG_LOCATION)
-      full_path = File.expand_path(load_path)
+    attr_reader :config
+
+    def initialize(config_path)
+      @config_path = config_path
+      load
+    end
+
+    def flush
+      path = File.expand_path(@config_path)
+      puts "removing: #{path}"
+      FileUtils.rm(path) if File.exist?(path)
+      initialize_files(path)
+    end
+
+    def save(config)
+      raise "config is nil" if config.nil?
+      File.open( File.expand_path(@config_path), 'w' ) do |out|
+        YAML.dump( config, out )
+      end
+    end
+
+    private
+    def load
+      full_path = File.expand_path(@config_path)
       puts "loading config from #{full_path}"
 
       if File.exist?(full_path) && YAML.load(File.open(full_path))
         config = YAML.load(File.open(full_path))
         config.writer = self
-        config
+        @config = config
       else
-        self.create_fresh_install_config(full_path)
+        @config = create_fresh_install_config(full_path)
       end
     end
 
-    def self.flush(path = CONFIG_LOCATION)
-      path = File.expand_path(path)
-      puts "removing: #{path}"
-      FileUtils.rm(path) if File.exist?(path)
-      self.initialize_files(path)
-    end
-
-    def self.save(config, path = CONFIG_LOCATION)
-      raise "config is nil" if config.nil?
-
-      File.open( File.expand_path(path), 'w' ) do |out|
-        YAML.dump( config, out )
-      end
-    end
-
-    private 
-    def self.create_fresh_install_config(full_path)
+    def create_fresh_install_config(full_path)
         config = Model::Config.new
         config.writer = self
         config.backup_folder = "#{ROOT_FOLDER}/backups"
-        self.initialize_files(full_path)
+        initialize_files(full_path)
         File.open( full_path, 'w' ) do |out|
           YAML.dump( config, out )
         end
         config
     end
 
-    def self.get_folder_name(path)
+    def get_folder_name(path)
       /(.*)\/.*.yml/.match(path)[1]
     end
 
-    def self.initialize_files(path)
-      folder = self.get_folder_name(path)
+    def initialize_files(path)
+      folder = get_folder_name(path)
       FileUtils.mkdir_p(folder) unless File.exist?(folder)
       FileUtils.touch(path)
     end

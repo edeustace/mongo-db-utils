@@ -2,17 +2,25 @@ require 'thor'
 require 'mongo-db-utils/config-loader'
 require 'mongo-db-utils/cmd'
 require 'mongo-db-utils/console'
-require 'mongo-db-utils/models'
+
+Dir['lib/mongo-db-utils/models/*.rb'].each {|file| require file.gsub("lib/", "") }
+#Dir.glob('mongo-db-utils/models/*', &method(:require))
 require 'mongo-db-utils/s3'
 
 module MongoDbUtils
   class CLI < Thor
 
-    desc "console", "run the interactive console"
-    def console
-      @config = MongoDbUtils::ConfigLoader.load
-      console = MongoDbUtils::Console.new(@config, MongoDbUtils::Cmd)
-      console.run
+    desc "console", "run the interactive console @param path - path to config file"
+    def console(path = MongoDbUtils::ConfigLoader::CONFIG_LOCATION)
+
+      if File.extname(path) != ".yml"
+        puts "Error: You must use a yaml file as your config file location"
+      else
+        @loader = MongoDbUtils::ConfigLoader.new(path)
+        @config = @loader.config
+        console = MongoDbUtils::Console.new(@config, MongoDbUtils::Cmd)
+        console.run
+      end
     end
 
     desc "backup MONGO_URI", "backup a db with a mongo uri eg: mongodb://user:pass@server:port/dbname"
