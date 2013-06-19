@@ -1,5 +1,7 @@
 # MongoDbUtils
 
+### !Current version 0.0.9.2 is in Beta - for a safer version use 0.0.9
+
 A little gem that simplifies backing up and copying your mongo dbs.
 
 You can run as a script (eg for cron jobs, or in interactive mode):
@@ -57,6 +59,6 @@ When it does backups it stores them in ````~/.mongo-db-utils/backups/````. The n
   - More specs
   - Added local mongo environment to simplify testing @see: integration-test-env
 
-* 0.0.9.1 - First release
+* 0.0.9 - First release
   - Copy mongo dbs
   - Back up to S3
