@@ -1,6 +1,6 @@
-project_root = File.dirname(File.absolute_path(__FILE__))
-
-Dir.glob(project_root + '/lib/mongo-db-utils/models/*', &method(:require))
+require 'mongo-db-utils/models/bucket'
+require 'mongo-db-utils/models/config'
+require 'mongo-db-utils/models/db'
 
 require 'yaml'
 
