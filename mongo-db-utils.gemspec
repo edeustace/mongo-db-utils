@@ -18,11 +18,13 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "rspec", "~> 2.6"
   gem.add_development_dependency "cucumber"
   gem.add_development_dependency "aruba"
+  gem.add_development_dependency "rake", "~> 10.1.0"
   gem.add_dependency "highline", "~> 1.6.13"
   gem.add_dependency "thor"
   gem.add_dependency "mongo", "1.9.0"
   gem.add_dependency "bson", "1.9.0"
   gem.add_dependency "bson_ext", "1.9.0"
   gem.add_dependency "aws-s3", "~> 0.6.3"
+
 
 end
