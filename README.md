@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/edeustace/mongo-db-utils.png)](https://travis-ci.org/edeustace/mongo-db-utils)
 
 
-### !Current version 0.0.9.2 is in Beta - for a safer version use 0.0.9
+### !Current version 0.0.9.3 is in Beta - for a safer version use 0.0.9
 
 A little gem that simplifies backing up and copying your mongo dbs.
 
