@@ -56,7 +56,9 @@ When it does backups it stores them in ````~/.mongo-db-utils/backups/````. The n
 
 ## Release Notes
 
-* 0.0.9.3 - BETA! Warning
+* 0.0.9.3 - BETA!
+  - Fixed config-loader require bug
+
 * 0.0.9.2 - BETA! Warning - there was an error with config loader in this version use 0.0.9.3 instead.
   - Added support for Replica Sets
   - console can be run pointing to any config file: `console myconfig.yml`
