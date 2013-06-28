@@ -4,6 +4,8 @@ require 'mongo'
 module MongoDbUtils
   class Cmd
 
+    include MongoDbUtils::Tools
+
     def self.backup(db, folder, final_path = nil, tar_it = true)
       puts ">> Backing up: #{db}, #{folder}, #{final_path}"
       unless( db_exists?(db) )
@@ -21,12 +23,12 @@ module MongoDbUtils
       puts ">> final backup path: #{full_path}"
 
       FileUtils.mkdir_p(full_path)
-      MongoDbUtils::Tools::Dump.run(
+      Dump.new(
         db.to_host_s,
         db.name,
         full_path,
         db.username,
-        db.password)
+        db.password).run
 
       if( tar_it )
         Dir.chdir(full_path)
@@ -66,12 +68,12 @@ module MongoDbUtils
         password = ""
       end
 
-      MongoDbUtils::Tools::Restore.run(
+      Restore.new(
         destination.to_host_s,
         destination.name,
         "#{tmp_dump_path}",
         username,
-        password)
+        password).run
 
       `rm -fr #{tmp_path}`
     end

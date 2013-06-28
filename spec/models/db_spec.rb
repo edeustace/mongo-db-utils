@@ -33,4 +33,20 @@ describe MongoDbUtils::Model::Db do
     rs.authentication_required?.should == true
   end
 
+
+  it "should parse the uri correctly" do
+    MongoDbUtils::Model.db_from_uri("mongodb://localhost:27017/db").class.to_s.should == "MongoDbUtils::Model::Db"
+    MongoDbUtils::Model.db_from_uri("set|mongodb://s:2,s:3/db").class.to_s.should == "MongoDbUtils::Model::ReplicaSetDb"
+  end
+
+
+  it "should parse a full url" do
+
+    uri = "rs-ds063347|mongodb://user:pass@ds063347-a0.mongolab.com:63347,ds063347-a1.mongolab.com:63347/staging"
+    db = MongoDbUtils::Model.db_from_uri(uri)
+    db.username.should eql "user"
+    db.password.should == "pass"
+    db.to_host_s.should == "rs-ds063347/ds063347-a0.mongolab.com:63347,ds063347-a1.mongolab.com:63347"
+  end
+
 end

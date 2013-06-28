@@ -1,6 +1,23 @@
 module MongoDbUtils
   module Model
 
+
+    # This method accepts 2 possible uri formats
+    # 1. the conventional mongo_uri format: mongodb://xxxxxxxx
+    # 2. the non standard way of representing a replicaset uri:
+    # --> replica_set|mongo_uri
+    # --> Eg: my-set|mongodb://xxxxxxx
+    # This is useful because many mongo commands require the set name
+    # when invoking them and this bundles the 2 things together
+    def self.db_from_uri(uri)
+      if(uri.include? "|")
+        split = uri.split("|")
+        ReplicaSetDb.new(split[1], split[0])
+      else
+        Db.new(uri)
+      end
+    end
+
     # A Db stored in the config
     class Db
 
