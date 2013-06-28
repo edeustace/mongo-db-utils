@@ -55,6 +55,8 @@ When it does backups it stores them in ````~/.mongo-db-utils/backups/````. The n
 
 
 ## Release Notes
+* 0.1.0 - BETA
+  - Fixed CLI backup and backup_s3 not using the config-loader correctly.
 
 * 0.0.9.3 - BETA!
   - Fixed config-loader require bug
