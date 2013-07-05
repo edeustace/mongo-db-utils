@@ -50,6 +50,14 @@ module MongoDbUtils
         has?(self.username) && has?(self.password)
       end
 
+      def host
+        host_and_port[:host]
+      end
+
+      def port
+        host_and_port[:port]
+      end
+
       # Return the host string in a format that is compatable with mongo binary tools
       # See: http://docs.mongodb.org/manual/reference/program/mongodump/#cmdoption-mongodump--host
       def to_host_s
@@ -72,6 +80,12 @@ module MongoDbUtils
       def has?(s)
         !s.nil? && !s.empty?
       end
+
+
+      def host_and_port
+        match, host,port = *@host_port.match(/(.*):(.*)/)
+        { :host => host, :port => port }
+      end
     end
 
 
@@ -81,6 +95,22 @@ module MongoDbUtils
       def initialize(uri, name)
         super(uri)
         @set_name = name
+      end
+
+
+      # Return an array of host:port strings
+      def hosts
+        @host_port.split(",")
+      end
+
+      # Block usage of this method from the super
+      def host
+        raise "'host' is not a valid method for a ReplicaSetDb - use 'hosts' instead."
+      end
+
+      # Block usage of this method from the super
+      def port
+        raise "'port' is not a valid method for a ReplicaSetDb - use 'hosts' instead."
       end
 
       # Note: we override this to provide a replica set format

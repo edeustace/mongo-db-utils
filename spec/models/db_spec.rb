@@ -13,6 +13,8 @@ describe MongoDbUtils::Model::Db do
     db.password.should == "pass"
     db.uri == "mongodb://user:pass@localhost:27017/db"
     db.authentication_required?.should == true
+    db.host.should == "localhost"
+    db.port.should == "27017"
   end
 
   it "should construct - no user/pass" do
@@ -23,6 +25,8 @@ describe MongoDbUtils::Model::Db do
     db.password.should == ""
     db.uri == "mongodb://localhost:27017/db"
     db.authentication_required?.should == false
+    db.host.should == "localhost"
+    db.port.should == "27017"
   end
 
   it "should build a replicaset db" do
@@ -31,6 +35,12 @@ describe MongoDbUtils::Model::Db do
     rs.to_host_s === "my-set/host:port,host2:port2"
     rs.uri.should == "mongodb://user:pass@host:port,host2:port2/db"
     rs.authentication_required?.should == true
+
+    expect{ rs.host }.to raise_error
+    expect{ rs.port }.to raise_error
+
+    rs.hosts.should == ["host:port", "host2:port2"]
+
   end
 
 
