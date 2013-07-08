@@ -77,6 +77,7 @@ module MongoDbUtils
         @options << o("-c", collection)
         @options << o("--file", file)
         @options << "--jsonArray" if opts[:json_array]
+        @options << "--drop" if opts[:drop]
       end
     end
 

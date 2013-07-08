@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/edeustace/mongo-db-utils.png)](https://travis-ci.org/edeustace/mongo-db-utils)
 
 
-### !Current version 0.1.1 is in Beta - for a safer version use 0.0.9
+### !Current version 0.1.2 is in Beta - for a safer version use 0.0.9
 
 A little gem that simplifies backing up and copying your mongo dbs.
 
@@ -55,6 +55,9 @@ When it does backups it stores them in ````~/.mongo-db-utils/backups/````. The n
 
 
 ## Release Notes
+* 0.1.3 - BETA
+  - Added :drop flag for Import tool
+
 * 0.1.2 - BETA
   - Added 'host' and 'port' getters to Db AND 'hosts' getter to ReplicaSetDb
 
