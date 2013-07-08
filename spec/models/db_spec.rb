@@ -16,7 +16,6 @@ describe MongoDbUtils::Model::Db do
     db.host.should == "localhost"
     db.port.should == "27017"
   end
-
   it "should construct - no user/pass" do
     db = Db.new("mongodb://localhost:27017/db")
     db.to_host_s.should == "localhost:27017"
@@ -58,5 +57,4 @@ describe MongoDbUtils::Model::Db do
     db.password.should == "pass"
     db.to_host_s.should == "rs-ds063347/ds063347-a0.mongolab.com:63347,ds063347-a1.mongolab.com:63347"
   end
-
 end

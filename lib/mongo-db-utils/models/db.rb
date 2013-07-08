@@ -24,26 +24,12 @@ module MongoDbUtils
       URI_NO_USER = /mongodb:\/\/(.*)\/(.*$)/
       URI_USER = /mongodb:\/\/(.*):(.*)@(.*)\/(.*$)/
 
-      attr_accessor :username, :password, :name, :uri
+      attr_reader :username, :password, :name, :uri
 
       def initialize(uri)
-        user,pwd,host_port,db = nil
-
-        if( uri.match(URI_USER))
-          match, user, pwd, host_port, name = *uri.match(URI_USER)
-        elsif(uri.match(URI_NO_USER))
-          match, host_port, name = *uri.match(URI_NO_USER)
-          user = ""
-          pwd = ""
-        end
-
-        raise "can't parse uri" if( host_port.nil? || name.nil? )
-
-        @host_port = host_port
-        @name = name
-        @username = user
-        @password = pwd
         @uri = uri
+
+        host_port
       end
 
       def authentication_required?
@@ -58,14 +44,16 @@ module MongoDbUtils
         host_and_port[:port]
       end
 
+
+
       # Return the host string in a format that is compatable with mongo binary tools
       # See: http://docs.mongodb.org/manual/reference/program/mongodump/#cmdoption-mongodump--host
       def to_host_s
-        "#{@host_port}"
+        "#{host_port}"
       end
 
       def to_s_simple
-        "#{@name} on #{@host_port} - (#{@username}:#{@password})"
+        "#{name} on #{host_port} - (#{username}:#{password})"
       end
 
       def to_s
@@ -76,14 +64,44 @@ module MongoDbUtils
         self.to_s <=> other.to_s
       end
 
+      def host_port; bits[:host_port]; end
+      def name; bits[:name]; end
+      def username; bits[:username]; end
+      def password; bits[:password]; end
+
       private
+
+      # extract the bits out of the uri
+      # @return a hash of the bits
+      def bits
+        user,pwd,host_port,db = nil
+
+        if( uri.match(URI_USER))
+          match, user, pwd, host_port, name = *uri.match(URI_USER)
+        elsif(uri.match(URI_NO_USER))
+          match, host_port, name = *uri.match(URI_NO_USER)
+          user = ""
+          pwd = ""
+        end
+
+        raise "can't parse uri" if( host_port.nil? || name.nil? )
+
+        {
+          :host_port => host_port,
+          :name => name,
+          :username => user,
+          :password => pwd
+        }
+
+      end
+
       def has?(s)
         !s.nil? && !s.empty?
       end
 
 
       def host_and_port
-        match, host,port = *@host_port.match(/(.*):(.*)/)
+        match, host,port = *host_port.match(/(.*):(.*)/)
         { :host => host, :port => port }
       end
     end
@@ -100,7 +118,7 @@ module MongoDbUtils
 
       # Return an array of host:port strings
       def hosts
-        @host_port.split(",")
+        host_port.split(",")
       end
 
       # Block usage of this method from the super
@@ -115,11 +133,11 @@ module MongoDbUtils
 
       # Note: we override this to provide a replica set format
       def to_host_s
-        "#{@set_name}/#{@host_port}"
+        "#{@set_name}/#{host_port}"
       end
 
       def to_s
-        "[ReplicaSetDb-(#{to_host_s}/#{@name})]"
+        "[ReplicaSetDb-(#{to_host_s}/#{name})]"
       end
     end
 
