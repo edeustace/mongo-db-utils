@@ -55,6 +55,9 @@ When it does backups it stores them in ````~/.mongo-db-utils/backups/````. The n
 
 
 ## Release Notes
+* 0.1.4 - Upcoming
+  - Changed db model so that it only persists the uri (smaller yml files)
+
 * 0.1.3 - BETA
   - Added :drop flag for Import tool
 
