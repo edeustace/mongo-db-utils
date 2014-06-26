@@ -16,6 +16,7 @@ describe MongoDbUtils::Model::Db do
     db.host.should == "localhost"
     db.port.should == "27017"
   end
+  
   it "should construct - no user/pass" do
     db = Db.new("mongodb://localhost:27017/db")
     db.to_host_s.should == "localhost:27017"

@@ -75,11 +75,10 @@ module MongoDbUtils
       # @return a hash of the bits
       def bits
         user,pwd,host_port,db = nil
-
-        if( uri.match(URI_USER))
-          match, user, pwd, host_port, name = *uri.match(URI_USER)
+        if(@uri.match(URI_USER))
+          match, user, pwd, host_port, name = *@uri.match(URI_USER)
         elsif(uri.match(URI_NO_USER))
-          match, host_port, name = *uri.match(URI_NO_USER)
+          match, host_port, name = *@uri.match(URI_NO_USER)
           user = ""
           pwd = ""
         end
