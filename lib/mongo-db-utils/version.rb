@@ -1,4 +1,4 @@
 module MongoDbUtils
-  VERSION = "0.1.4"
-  READY_FOR_USE = "(Beta version)"
+  VERSION = "0.1.5"
+  READY_FOR_USE = "(prod version)"
 end
