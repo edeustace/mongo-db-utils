@@ -223,15 +223,16 @@ eos
       say("#{plan[:source].to_s} --> #{plan[:destination].to_s}")
 
       my_menu("") do |menu|
-        menu.choice "Do it!" do begin_copy(plan) end
+        menu.choice "Do it!" do begin_copy(plan, false) end
+        menu.choice "Do it - skip backup" do begin_copy(plan, true) end
         menu.choice "Reverse" do
           show_copy_plan( {:source => plan[:destination], :destination => plan[:source]})
         end
       end
     end
 
-    def begin_copy(plan)
-      @cmd.copy(@config.backup_folder, plan[:source], plan[:destination], false)
+    def begin_copy(plan, skip_backup = false)
+      @cmd.copy(@config.backup_folder, plan[:source], plan[:destination], false, skip_backup)
     end
 
     def my_menu(prompt, show_defaults = true)

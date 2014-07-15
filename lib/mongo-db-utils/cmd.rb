@@ -41,9 +41,9 @@ module MongoDbUtils
     end
 
     # With remote dbs you can't do a copy_database if you're not an admin.
-    def self.copy(path, source, destination, halt_on_no_backup = true)
+    def self.copy(path, source, destination, halt_on_no_backup = true, skip_backup = false)
 
-      backup_made = backup(destination, path)
+      backup_made = if skip_backup then true else backup(destination, path) end
 
       if( !backup_made && halt_on_no_backup)
         puts "aborting - no backup was made"
