@@ -15,21 +15,31 @@ module MongoDbUtils
     class BaseCmd
 
       def initialize(cmd_name, host_and_port, db, username = "", password = "")
-        @options = build_base_options(host_and_port, db, username, password)
+        @unsafeOptions = build_base_options(host_and_port, db, username, password)
+        @optionsWithoutCredentials = build_base_options(host_and_port, db, username.empty? ? '':'****', password.empty? ? '':'****')
         @cmd_name = cmd_name
       end
 
       def run
         puts "[#{self.class}] run: #{cmd}"
-        output = `#{cmd}`
+        output = `#{executableCmd}`
         raise ToolsException.new("#{cmd}", output) unless $?.to_i == 0
       end
 
       def cmd
-        "#{@cmd_name} #{options_string(@options)}"
+        "#{@cmd_name} #{options_string(@optionsWithoutCredentials)}"
+      end
+
+      def executableCmd
+        "#{@cmd_name} #{options_string(@unsafeOptions)}"
       end
 
       private
+      
+      def addOption(option)
+        @unsafeOptions << option
+        @optionsWithoutCredentials << option
+      end
 
       def o(key,value)
         Option.new(key,value)
@@ -55,18 +65,22 @@ module MongoDbUtils
     class Dump < BaseCmd
       def initialize(host_and_port,db,output,username = "", password = "")
         super("mongodump", host_and_port, db, username, password)
-        @options << o("-o", output)
+        addOption(o("-o", output))
       end
     end
 
     class Restore < BaseCmd
       def initialize(host_and_port,db,source_folder,username = "", password = "")
         super("mongorestore", host_and_port, db, username, password)
-        @options << "--drop"
+        addOption("--drop")
         @source_folder = source_folder
       end
 
       def cmd
+        "#{super} #{@source_folder}"
+      end
+
+      def executableCmd
         "#{super} #{@source_folder}"
       end
     end
@@ -74,10 +88,10 @@ module MongoDbUtils
     class Import < BaseCmd
       def initialize(host_and_port, db, collection, file, username = "", password = "", opts = {})
         super("mongoimport", host_and_port, db, username, password)
-        @options << o("-c", collection)
-        @options << o("--file", file)
-        @options << "--jsonArray" if opts[:json_array]
-        @options << "--drop" if opts[:drop]
+        addOption(o("-c", collection))
+        addOption(o("--file", file))
+        addOption("--jsonArray") if opts[:json_array]
+        addOption("--drop") if opts[:drop]
       end
     end
 
@@ -85,10 +99,10 @@ module MongoDbUtils
 
       def initialize(host_and_port, db, collection, query, output, username = "", password = "", opts = {})
         super("mongoexport", host_and_port, db, username, password)
-        @options << o("-c", collection)
-        @options << o("-o", output)
-        @options << o("--query", "'#{query}'")
-        @options << "--jsonArray" if opts[:json_array]
+        addOption(o("-c", collection))
+        addOption(o("-o", output))
+        addOption(o("--query", "'#{query}'"))
+        addOption("--jsonArray") if opts[:json_array]
       end
     end
 
