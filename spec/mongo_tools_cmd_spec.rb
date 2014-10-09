@@ -9,11 +9,11 @@ describe Dump do
   end
 
   it "should work with single uris" do
-    Dump.new("host:port", "db", "out", "user", "pass").executableCmd.should eql "mongodump -h host:port -db db -u user -p pass -o out"
+    Dump.new("host:port", "db", "out", "user", "pass").executable_cmd.should eql "mongodump -h host:port -db db -u user -p pass -o out"
   end
 
   it "should work with single uris - no user/pass" do
-    Dump.new("host:port", "db", "out").executableCmd.should eql "mongodump -h host:port -db db -o out"
+    Dump.new("host:port", "db", "out").executable_cmd.should eql "mongodump -h host:port -db db -o out"
   end
 
   it "should safely work with replica set uris" do
@@ -23,7 +23,7 @@ describe Dump do
 
   it "should work with replica set uris" do
     expected = "mongodump -h setname/host1:port1,host2:port2 -db db -u user -p pass -o out"
-    Dump.new("setname/host1:port1,host2:port2","db", "out", "user", "pass").executableCmd.should eql expected
+    Dump.new("setname/host1:port1,host2:port2","db", "out", "user", "pass").executable_cmd.should eql expected
   end
 
 end
@@ -35,7 +35,7 @@ describe Restore do
   end
 
   it "should work with single uris" do
-    Restore.new("host:port", "db", "source", "user", "pass").executableCmd.should eql "mongorestore -h host:port -db db -u user -p pass --drop source"
+    Restore.new("host:port", "db", "source", "user", "pass").executable_cmd.should eql "mongorestore -h host:port -db db -u user -p pass --drop source"
   end
 
   it "should safely work with replica set uris" do
@@ -45,7 +45,7 @@ describe Restore do
 
   it "should work with replica set uris" do
     expected = "mongorestore -h setname/host1:port1,host2:port2 -db db -u user -p pass --drop source"
-    Restore.new("setname/host1:port1,host2:port2","db", "source", "user", "pass").executableCmd.should eql expected
+    Restore.new("setname/host1:port1,host2:port2","db", "source", "user", "pass").executable_cmd.should eql expected
   end
 end
 
@@ -56,11 +56,11 @@ describe Import do
   end
 
   it "should work with single uris - with user/pass" do
-    Import.new("host:port", "db", "coll", "myfile.json", "user", "pass").executableCmd.should eql "mongoimport -h host:port -db db -u user -p pass -c coll --file myfile.json"
+    Import.new("host:port", "db", "coll", "myfile.json", "user", "pass").executable_cmd.should eql "mongoimport -h host:port -db db -u user -p pass -c coll --file myfile.json"
   end
 
   it "should work with single uris - no user/pass" do
-    Import.new("host:port", "db", "coll", "myfile.json").executableCmd.should eql "mongoimport -h host:port -db db -c coll --file myfile.json"
+    Import.new("host:port", "db", "coll", "myfile.json").executable_cmd.should eql "mongoimport -h host:port -db db -c coll --file myfile.json"
   end
 
   it "should safely work with replica set uris" do
@@ -70,7 +70,7 @@ describe Import do
 
   it "should work with replica set uris" do
     expected = "mongoimport -h setname/host1:port1,host2:port2 -db db -u user -p pass -c coll --file myfile.json --jsonArray"
-    Import.new("setname/host1:port1,host2:port2","db", "coll", "myfile.json", "user", "pass", { :json_array => true} ).executableCmd.should eql expected
+    Import.new("setname/host1:port1,host2:port2","db", "coll", "myfile.json", "user", "pass", { :json_array => true} ).executable_cmd.should eql expected
   end
 end
 
@@ -81,11 +81,11 @@ describe Export do
   end
 
   it "should work with single uris - with user/pass" do
-    Export.new("host:port", "db", "coll", "{query}", "myfile.json", "user", "pass").executableCmd.should eql "mongoexport -h host:port -db db -u user -p pass -c coll -o myfile.json --query '{query}'"
+    Export.new("host:port", "db", "coll", "{query}", "myfile.json", "user", "pass").executable_cmd.should eql "mongoexport -h host:port -db db -u user -p pass -c coll -o myfile.json --query '{query}'"
   end
 
   it "should work with single uris - no user/pass" do
-    Export.new("host:port", "db", "coll", "{query}", "myfile.json").executableCmd.should eql "mongoexport -h host:port -db db -c coll -o myfile.json --query '{query}'"
+    Export.new("host:port", "db", "coll", "{query}", "myfile.json").executable_cmd.should eql "mongoexport -h host:port -db db -c coll -o myfile.json --query '{query}'"
   end
 
   it "should safely work with replica set uris" do
@@ -95,7 +95,7 @@ describe Export do
 
   it "should work with replica set uris" do
     expected = "mongoexport -h setname/host1:port1,host2:port2 -db db -u user -p pass -c coll -o myfile.json --query '{query}' --jsonArray"
-    Export.new("setname/host1:port1,host2:port2","db", "coll", "{query}", "myfile.json", "user", "pass", { :json_array => true} ).executableCmd.should eql expected
+    Export.new("setname/host1:port1,host2:port2","db", "coll", "{query}", "myfile.json", "user", "pass", { :json_array => true} ).executable_cmd.should eql expected
   end
 end
 
