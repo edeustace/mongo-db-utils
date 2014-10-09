@@ -8,8 +8,8 @@ module MongoDbUtils
 
   class ConfigLoader
 
-    ROOT_FOLDER = "~/.mongo-db-utils"
-    CONFIG_LOCATION = "#{ROOT_FOLDER}/config.yml"
+    ROOT_FOLDER = File.join("~",".mongo-db-utils")
+    CONFIG_LOCATION = File.join(ROOT_FOLDER, "config.yml")
 
     attr_reader :config
 
@@ -33,6 +33,7 @@ module MongoDbUtils
     end
 
     private
+
     def load
       full_path = File.expand_path(@config_path)
       puts "loading config from #{full_path}"
@@ -49,7 +50,7 @@ module MongoDbUtils
     def create_fresh_install_config(full_path)
         config = Model::Config.new
         config.writer = self
-        config.backup_folder = "#{ROOT_FOLDER}/backups"
+        config.backup_folder = File.join(ROOT_FOLDER, "backups")
         initialize_files(full_path)
         File.open( full_path, 'w' ) do |out|
           YAML.dump( config, out )
