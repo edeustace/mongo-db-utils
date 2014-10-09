@@ -1,5 +1,3 @@
-require 'rubygems/package'
-require 'zlib'
 require 'mongo-db-utils/tools/commands'
 require 'mongo'
 
