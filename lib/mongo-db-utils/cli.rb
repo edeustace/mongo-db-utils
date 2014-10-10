@@ -46,8 +46,10 @@ module MongoDbUtils
       backup_folder = config.backup_folder
       db = get_db(mongo_uri, replica_set_name)
       raise "can't parse uri" if db.nil?
-      backup = Cmd.download_backup_from_s3(backup_folder, 'latest', bucket_name, access_key_id, secret_access_key)
-      Cmd.restore_from_backup(backup_folder, db, backup, source_db)
+      Dir.mktmpdir do |tmp_dir|
+        backup = Cmd.download_backup_from_s3(tmp_dir, 'latest', bucket_name, access_key_id, secret_access_key)
+        Cmd.restore_from_backup(tmp_dir, db, backup, source_db)
+      end
     end
 
     private
