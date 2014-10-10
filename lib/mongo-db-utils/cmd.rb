@@ -35,8 +35,8 @@ module MongoDbUtils
 
       if (tar_it)
         Dir.chdir(full_path)
-        `tar cvf #{db.name}.tar #{db.name}`
-        `rm -fr #{full_db_path}`
+        `tar --create --verbose --file=#{db.name}.tar #{db.name}`
+        delete_folder full_db_path
         "#{full_db_path}.tar"
       else
         full_db_path
@@ -82,7 +82,7 @@ module MongoDbUtils
         username,
         password).run
 
-      `rm -fr #{tmp_path}`
+      delete_folder tmp_path
     end
 
     def self.backup_s3(backup_folder, db, bucket_name, access_key_id, secret_access_key)
@@ -91,7 +91,7 @@ module MongoDbUtils
       MongoDbUtils::S3::put_file(tar_file, name, bucket_name, access_key_id, secret_access_key)
       file = File.basename(tar_file)
       folder = tar_file.gsub(file, '')
-      `rm -fr #{folder}`
+      delete_folder folder
     end
 
     def self.list_backups(bucket_name, access_key_id, secret_access_key)
@@ -132,6 +132,11 @@ module MongoDbUtils
         puts "Restoring db ..."
         restore_db(db, File.join(dir, source_db ))
       end
+    end
+
+
+    def self.delete_backup(backup_folder, backup)
+      delete_folder File.join(backup_folder, backup)
     end
 
 
@@ -183,13 +188,13 @@ module MongoDbUtils
     end
 
     def self.unzip(archive, dir)
-      command = "tar -xzf #{archive} -C #{dir} --strip 1"
+      command = "tar --extract --gzip --file=#{archive} --directory=#{dir} --strip 1"
       output = `#{command} 2>&1`
       raise "#{output} cmd <#{command}>" unless $?.to_i == 0
     end
 
     def self.list_archive_folders(folder, archive)
-      command = "tar -tf #{File.join(folder, archive)} | grep '/$'"
+      command = "tar --list --file=#{File.join(folder, archive)} | grep '/$'"
       output = `#{command} 2>&1`
       raise "#{output} cmd <#{command}>" unless $?.to_i == 0
       output.split
@@ -200,6 +205,11 @@ module MongoDbUtils
         bucket_name,
         access_key_id,
         secret_access_key).select { |a| a.end_with? ".tgz" }.sort.pop
+    end
+
+    def self.delete_folder(path)
+      puts "deleting folder #{path}"
+      `rm --force --recursive #{path}`
     end
   end
 end

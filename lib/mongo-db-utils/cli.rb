@@ -43,7 +43,6 @@ module MongoDbUtils
     desc "restore_from_s3 MONGO_URI BUCKET ACCESS_KEY SECRET_ACCESS_KEY SOURCE_DB [REPLICA_SET_NAME]", "restore a db from Amason s3 with a mongo uri eg: mongodb://user:pass@server:port/dbname"
     def restore_from_s3(mongo_uri, bucket_name, access_key_id, secret_access_key, source_db, replica_set_name = nil)
       config = get_config
-      backup_folder = config.backup_folder
       db = get_db(mongo_uri, replica_set_name)
       raise "can't parse uri" if db.nil?
       Dir.mktmpdir do |tmp_dir|

@@ -76,6 +76,9 @@ module MongoDbUtils
         menu.choice "download a backup from an amazon s3 bucket" do
           download_backup_from_s3
         end
+        menu.choice "delete a backup from the downloads" do
+          delete_downloaded_backup
+        end
         menu.choice "restore a db from a downloaded backup" do
           restore_db_from_backup
         end
@@ -144,7 +147,11 @@ module MongoDbUtils
       plan = Hash.new
 
       if @config.has_buckets?
-        bucket_list_menu("Choose a source bucket:") do |bucket|
+        bucket_list_menu("Choose a source bucket:", true) do |bucket|
+          if bucket == 'back'
+            main_menu
+            return
+          end
           plan[:bucket] = bucket
         end
       else
@@ -158,17 +165,41 @@ module MongoDbUtils
         plan[:bucket].access_key,
         plan[:bucket].secret_key).select { |a| a.end_with? ".tgz" }
 
-      backup_list_menu("Choose a backup:", backups) do |backup|
-        plan[:backup] = backup
+      backup_list_menu("Choose a backup:", backups, true) do |backup|
+        if backup == 'back'
+          main_menu
+        else
+          plan[:backup] = backup
+          @cmd.download_backup_from_s3(
+            @config.backup_folder,
+            plan[:backup],
+            plan[:bucket].name,
+            plan[:bucket].access_key,
+            plan[:bucket].secret_key)
+        end
       end
-
-      @cmd.download_backup_from_s3(
-        @config.backup_folder,
-        plan[:backup],
-        plan[:bucket].name,
-        plan[:bucket].access_key,
-        plan[:bucket].secret_key)
     end
+
+
+    def delete_downloaded_backup
+      plan = Hash.new
+
+      downloaded_backups_list_menu("Choose a backup:", @cmd.list_downloaded_backups(@config.backup_folder), true) do |backup|
+        if backup == 'back'
+          main_menu
+          return
+        end
+        if ask("Delete backup #{backup}? (Y|n) [n]") != 'Y'
+          main_menu
+          return
+        end
+        plan[:backup] = backup
+        @cmd.delete_backup(
+          @config.backup_folder,
+          plan[:backup])
+      end
+    end
+
 
     def restore_db_from_backup
       plan = Hash.new
@@ -183,6 +214,11 @@ module MongoDbUtils
 
       source_db_list_menu("Choose a source_db in the backup:", @cmd.list_backup_folders(@config.backup_folder, plan[:backup])) do |folder|
         plan[:source_db] = folder
+      end
+
+      if ask("Restore db #{db}? (Y|n) [n]") != 'Y'
+        main_menu
+        return
       end
 
       @cmd.restore_from_backup(
@@ -334,7 +370,7 @@ module MongoDbUtils
             say("Goodbye"); abort("--");
           end
         end
-        say(" ")
+        say("")
         yield menu if block_given?
       end
     end
@@ -349,8 +385,13 @@ module MongoDbUtils
       end
     end
 
-    def bucket_list_menu(prompt)
+    def bucket_list_menu(prompt, show_defaults = false)
       my_menu(prompt, false) do |menu|
+        if show_defaults
+          menu.choice 'Back' do
+            yield 'back' if block_given?
+          end
+        end
         @config.buckets.sort.each do |bucket|
           menu.choice "#{bucket}" do
             yield bucket if block_given?
@@ -359,8 +400,13 @@ module MongoDbUtils
       end
     end
 
-    def backup_list_menu(prompt, backups)
+    def backup_list_menu(prompt, backups, show_defaults = false)
       my_menu(prompt, false) do |menu|
+        if show_defaults
+          menu.choice 'Back' do
+            yield 'back' if block_given?
+          end
+        end
         menu.choice 'latest' do
           yield 'latest' if block_given?
         end
@@ -382,8 +428,13 @@ module MongoDbUtils
       end
     end
 
-    def downloaded_backups_list_menu(prompt, backups)
+    def downloaded_backups_list_menu(prompt, backups, show_defaults = false)
       my_menu(prompt, false) do |menu|
+        if show_defaults
+          menu.choice 'Back' do
+            yield 'back' if block_given?
+          end
+        end
         backups.sort.each do |item|
           menu.choice "#{item}" do
             yield item if block_given?
