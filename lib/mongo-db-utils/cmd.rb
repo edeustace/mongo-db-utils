@@ -99,6 +99,7 @@ module MongoDbUtils
     end
 
     def self.list_downloaded_backups(backup_folder)
+      FileUtils.mkdir_p(backup_folder)
       Dir.entries(backup_folder).select { |a| a.end_with? '.tgz' }
     end
 
