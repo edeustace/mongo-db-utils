@@ -6,39 +6,41 @@ module MongoDbUtils
 
     class ToolsException < RuntimeError
       attr :cmd, :output
-      def initialize(cmd, output)
+      def initialize(cmd, output, message)
+        super(message)
         @cmd = cmd
-        @output =output
+        @output = output
       end
+
     end
 
     class BaseCmd
 
-      def initialize(cmd_name, host_and_port, db, username = "", password = "")
-        @unsafeOptions = build_base_options(host_and_port, db, username, password)
-        @optionsWithoutCredentials = build_base_options(host_and_port, db, username.empty? ? '':'****', password.empty? ? '':'****')
+      def initialize(cmd_name, host_and_port, db, username = '', password = '')
+        @unsafe_options = build_base_options(host_and_port, db, username, password)
+        @options_without_credentials = build_base_options(host_and_port, db, username.empty? ? '':'****', password.empty? ? '':'****')
         @cmd_name = cmd_name
       end
 
       def run
         puts "[#{self.class}] run: #{cmd}"
-        output = `#{executableCmd}`
-        raise ToolsException.new("#{cmd}", output) unless $?.to_i == 0
+        output = `#{executable_cmd} 2>&1`
+        raise ToolsException.new("#{cmd}", output, "Error in #{cmd_name}:: #{output} cmd #{cmd}") unless $?.to_i == 0
       end
 
       def cmd
-        "#{@cmd_name} #{options_string(@optionsWithoutCredentials)}"
+        "#{@cmd_name} #{options_string(@options_without_credentials)}"
       end
 
-      def executableCmd
-        "#{@cmd_name} #{options_string(@unsafeOptions)}"
+      def executable_cmd
+        "#{@cmd_name} #{options_string(@unsafe_options)}"
       end
 
       private
       
-      def addOption(option)
-        @unsafeOptions << option
-        @optionsWithoutCredentials << option
+      def add_option(option)
+        @unsafe_options << option
+        @options_without_credentials << option
       end
 
       def o(key,value)
@@ -46,33 +48,33 @@ module MongoDbUtils
       end
 
       # options common to all commands
-      def build_base_options(host_and_port,db,username="",password="")
+      def build_base_options(host_and_port,db,username='',password='')
         options = []
-        options << o("-h", host_and_port)
-        options << o("-db", db)
-        options << o("-u", username)
-        options << o("-p", password)
+        options << o('-h', host_and_port)
+        options << o('-db', db)
+        options << o('-u', username)
+        options << o('-p', password)
         options
       end
 
       # given an array of options build a string of those options unless the option is empty
       def options_string(opts)
         opt_strings = opts.reject{ |o| o.empty? }.map { |o| o.to_s }
-        opt_strings.join(" ").strip
+        opt_strings.join(' ').strip
       end
     end
 
     class Dump < BaseCmd
-      def initialize(host_and_port,db,output,username = "", password = "")
-        super("mongodump", host_and_port, db, username, password)
-        addOption(o("-o", output))
+      def initialize(host_and_port,db,output,username = '', password = '')
+        super('mongodump', host_and_port, db, username, password)
+        add_option(o('-o', output))
       end
     end
 
     class Restore < BaseCmd
-      def initialize(host_and_port,db,source_folder,username = "", password = "")
-        super("mongorestore", host_and_port, db, username, password)
-        addOption("--drop")
+      def initialize(host_and_port,db,source_folder,username = '', password = '')
+        super('mongorestore', host_and_port, db, username, password)
+        add_option('--drop')
         @source_folder = source_folder
       end
 
@@ -80,29 +82,29 @@ module MongoDbUtils
         "#{super} #{@source_folder}"
       end
 
-      def executableCmd
+      def executable_cmd
         "#{super} #{@source_folder}"
       end
     end
 
     class Import < BaseCmd
-      def initialize(host_and_port, db, collection, file, username = "", password = "", opts = {})
-        super("mongoimport", host_and_port, db, username, password)
-        addOption(o("-c", collection))
-        addOption(o("--file", file))
-        addOption("--jsonArray") if opts[:json_array]
-        addOption("--drop") if opts[:drop]
+      def initialize(host_and_port, db, collection, file, username = '', password = '', opts = {})
+        super('mongoimport', host_and_port, db, username, password)
+        add_option(o('-c', collection))
+        add_option(o('--file', file))
+        add_option('--jsonArray') if opts[:json_array]
+        add_option('--drop') if opts[:drop]
       end
     end
 
     class Export < BaseCmd
 
-      def initialize(host_and_port, db, collection, query, output, username = "", password = "", opts = {})
-        super("mongoexport", host_and_port, db, username, password)
-        addOption(o("-c", collection))
-        addOption(o("-o", output))
-        addOption(o("--query", "'#{query}'"))
-        addOption("--jsonArray") if opts[:json_array]
+      def initialize(host_and_port, db, collection, query, output, username = '', password = '', opts = {})
+        super('mongoexport', host_and_port, db, username, password)
+        add_option(o('-c', collection))
+        add_option(o('-o', output))
+        add_option(o('--query', "'#{query}'"))
+        add_option('--jsonArray') if opts[:json_array]
       end
     end
 
