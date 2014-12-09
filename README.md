@@ -56,4 +56,4 @@ When it does backups it stores them in ````~/.mongo-db-utils/backups/````. The n
 
 ## Release Notes
 
-see [Releases](/edeustace/mongo-db-utils/releases).
+see [Releases](http://github.com/edeustace/mongo-db-utils/releases).
