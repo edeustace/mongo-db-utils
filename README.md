@@ -55,30 +55,5 @@ When it does backups it stores them in ````~/.mongo-db-utils/backups/````. The n
 
 
 ## Release Notes
-* 0.1.4 - Upcoming
-  - Changed db model so that it only persists the uri (smaller yml files)
 
-* 0.1.3 - BETA
-  - Added :drop flag for Import tool
-
-* 0.1.2 - BETA
-  - Added 'host' and 'port' getters to Db AND 'hosts' getter to ReplicaSetDb
-
-* 0.1.1 - BETA
-  - Tidy up Tools - add Import and Restore to tool set
-
-* 0.1.0 - BETA
-  - Fixed CLI backup and backup_s3 not using the config-loader correctly.
-
-* 0.0.9.3 - BETA!
-  - Fixed config-loader require bug
-
-* 0.0.9.2 - BETA! Warning - there was an error with config loader in this version use 0.0.9.3 instead.
-  - Added support for Replica Sets
-  - console can be run pointing to any config file: `console myconfig.yml`
-  - More specs
-  - Added local mongo environment to simplify testing @see: integration-test-env
-
-* 0.0.9 - First release
-  - Copy mongo dbs
-  - Back up to S3
+see [Releases](/edeustace/mongo-db-utils/releases).
