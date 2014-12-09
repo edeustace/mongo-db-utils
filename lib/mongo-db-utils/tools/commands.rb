@@ -25,7 +25,7 @@ module MongoDbUtils
       def run
         puts "[#{self.class}] run: #{cmd}"
         output = `#{executable_cmd} 2>&1`
-        raise ToolsException.new("#{cmd}", output, "Error in #{cmd_name}:: #{output} cmd #{cmd}") unless $?.to_i == 0
+        raise ToolsException.new("#{cmd}", output, "Error in #{@cmd_name}:: #{output}, cmd: #{cmd}") unless $?.to_i == 0
       end
 
       def cmd
